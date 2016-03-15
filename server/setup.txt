@@ -1,0 +1,5 @@
+To run this, you will need:
+- A google api key
+- The googlemaps api python module
+- geopy
+
