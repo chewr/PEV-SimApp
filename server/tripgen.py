@@ -34,7 +34,5 @@ def readNewburyTestData():
 				pass
 	return trips
 
-testdata = readNewburyTestData()
-for t in testdata:
-	print t.time_ordered
-	print t.approx_dur()
+
+

@@ -18,6 +18,9 @@ class Vehicle:
 		## set location if necessary
 		raise(NotImplementedError)
 
+	def assign(self, task):
+		raise(NotImplementedError)
+
 class Fleet:
 	def __init__(self, fleet_size, bounds):
 		self.vehicles = []
