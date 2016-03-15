@@ -2,6 +2,7 @@
 #TODO allow user to supply trip file
 import csv
 import trip
+import sim_util
 
 def readNewburyTestData():
 	path = "../dataprocessing/filtered-street.csv"
@@ -24,7 +25,7 @@ def readNewburyTestData():
 				start = (float(row[4]), float(row[3]))
 				dest = (float(row[8]), float(row[7]))
 				trips.append(trip.Pickup(
-					row[1], ## TODO time-ify
+					sim_util.timeify(row[1]),
 					start, 
 					dest,
 					True) ## TODO packages?
@@ -35,4 +36,5 @@ def readNewburyTestData():
 
 testdata = readNewburyTestData()
 for t in testdata:
+	print t.time_ordered
 	print t.approx_dur()

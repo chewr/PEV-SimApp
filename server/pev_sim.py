@@ -8,7 +8,7 @@ class Sim_env:
 		self.bounds = bounds
 		self.fleet = pev.Fleet(fleet_size, bounds)
 
-	def schedule(self, start_time, stop_time, trips):
+	def schedule(self, start_time, trips):
 		## trips is a sorted list of Trip objects,
 		## sorted by pickup time
 		for t in trips:
