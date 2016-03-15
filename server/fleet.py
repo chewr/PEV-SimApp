@@ -1,3 +1,5 @@
+## TODO a model for a fleet of PEVs in a city
+
 import sim_util as util
 import trip
 

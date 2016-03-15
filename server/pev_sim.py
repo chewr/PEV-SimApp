@@ -1,3 +1,6 @@
+## TODO run simulation of a fleet of PEVs carrying out a
+## a set of pickup/dropoff tasks
+
 import fleet as pev
 
 class Sim_env:

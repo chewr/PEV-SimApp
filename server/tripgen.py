@@ -1,6 +1,7 @@
 #TODO random trip generation
 #TODO allow user to supply trip file
 import csv
+import trip
 
 def readNewburyTestData():
 	path = "../dataprocessing/filtered-street.csv"
@@ -20,14 +21,18 @@ def readNewburyTestData():
 			## Dropoff Latitude
 			## Dropoff Longitude
 			try:
+				start = (float(row[4]), float(row[3]))
+				dest = (float(row[8]), float(row[7]))
 				trips.append(trip.Pickup(
 					row[1], ## TODO time-ify
-					(float(row[3]), float(row[4])), ## lat-long ify
-					(float(row[7]), float(row[8])), ## lat-log ify
-					None, ## TODO get duration
-					None, ## TODO get route
+					start, 
+					dest,
 					True) ## TODO packages?
 				)
 			except ValueError:
 				pass
 	return trips
+
+testdata = readNewburyTestData()
+for t in testdata:
+	print t.approx_dur()
