@@ -3,7 +3,7 @@
 ## upcoming tasks)
 import fleet
 
-def assign(task, fleet):
+def assign(time, task, fleet):
 	## strawman - assign task to soonest free member
 	assignee = None
 	soonest_free = None

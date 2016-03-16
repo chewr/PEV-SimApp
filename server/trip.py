@@ -25,3 +25,5 @@ class Pickup:
 		self.duration = dur
 		self.route = route
 
+	def getTimeOrdered(self):
+		return self.time_ordered

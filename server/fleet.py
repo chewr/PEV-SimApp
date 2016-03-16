@@ -32,9 +32,10 @@ class Fleet:
 		
 	def assign_task(trip):
 		## TODO args, return?
+		t = trip.getTimeOrdered()
 		for v in vehicles:
-			v.update(trip.time_ordered)
-		fsched.assign(trip, fleet)
+			v.update(t)
+		fsched.assign(t, trip, fleet)
 
 	def __getitem__(self, key):
 		return self.vehicles[key]
