@@ -35,3 +35,6 @@ class Fleet:
 		for v in vehicles:
 			v.update(trip.time_ordered)
 		fsched.assign(trip, fleet)
+
+	def __getitem__(self, key):
+		return self.vehicles[key]
