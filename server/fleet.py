@@ -3,6 +3,8 @@
 import sim_util as util
 import trip
 from collections import deque
+import fsched
+import routes
 
 class Dispatch:
 	def __init__(self, start, end, kind, route, dest):
@@ -16,7 +18,7 @@ class Dispatch:
 		return self.end
 
 def create_dispatch(time, start, dest):
-	rte = routes.finder.get_dirs(start, dest)
+	rte = routes.finder.get_dirs(start, dest)[0]
 	dur = 0 ## TODO account for non-instant pickups?
 	for l in rte["legs"]:
 		dur += l["duration"]["value"]
@@ -27,7 +29,8 @@ def dispatch_from_task(task, start_time):
 		task.getType(), task.getRoute(), task.getDest())
 
 class Vehicle:
-	def __init__(self, is_pev, loc):
+	def __init__(self, uid, is_pev, loc):
+		self.uid = uid
 		self.is_pev = is_pev
 		self.loc = loc
 
@@ -38,22 +41,29 @@ class Vehicle:
 
 	def update(self, time):
 		while self.todo:
-			if self
+			if self.todo[0].end <= time:
+				## update location
+				t = self.todo.popleft()
+				self.loc = t.dest
+				## move from todo to history
+				self.history.append(t)
+			else:
+				break
 			
 		## TODO implement - update task,
 		## set location if necessary
-		raise(NotImplementedError)
+		## raise(NotImplementedError)
 
 	def assign(self, task, time):
 		## TODO create the arrival Dispatch
 		## and add to todo
 		## create the passenger/fare dispatch
 		## and add to todo
-		if not self.todo:
-			self.todo.append(create_dispatch(time, self.loc, task.getPickupLoc())
+		if self.todo:
+			self.todo.append(create_dispatch(self.soonestFreeAfter(time), self.todo[-1].dest, task.getPickupLoc()))
 		else:
-			self.todo.append(create_dispatch(self.soonestFreeAfter(time), self.todo[-1].dest, task.getPickupLoc())
-		self.todo.append(dispatch_from_task(task, self.soonestFreeAfter(time)
+			self.todo.append(create_dispatch(time, self.loc, task.getPickupLoc()))
+		self.todo.append(dispatch_from_task(task, self.soonestFreeAfter(time)))
 
 	def soonestFreeAfter(self, t):
 		## return the soonest time that the PEV will
@@ -62,24 +72,27 @@ class Vehicle:
 			return t
 		else:
 			return self.todo[-1].getEndTime()
+
+	def getUID(self):
+		return self.uid
 			
 
 class Fleet:
-	def __init__(self, fleet_size, bounds):
+	def __init__(self, fleet_size, bounds, start_loc):
 		self.vehicles = []
-		start_loc = util.center_of(bounds)
+		start_loc = start_loc
 		for i in xrange(fleet_size):
 			self.vehicles.append(
-				Vehicle(True, start_loc))		
+				Vehicle(i, True, start_loc))		
 
 		
-	def assign_task(trip):
+	def assign_task(self, trip):
 		## TODO args, return?
 		t = trip.getTimeOrdered()
-		for v in vehicles:
+		for v in self.vehicles:
 			v.update(t)
-		vid = fsched.assign(t, trip, fleet)
-		print "task " + trip.getID() + " assigned to vehicle " + vid
+		vid = fsched.assign(t, trip, self)
+		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid)
 
 	def __getitem__(self, key):
 		return self.vehicles[key]

@@ -12,3 +12,4 @@ def assign(time, task, fleet):
 		elif pev.soonestFreeAfter(time) < assignee.soonestFreeAfter(time):
 			assignee = pev
 	assignee.assign(task, time)
+	return assignee.getUID()
