@@ -6,13 +6,9 @@ import fleet
 def assign(time, task, fleet):
 	## strawman - assign task to soonest free member
 	assignee = None
-	soonest_free = None
-	for v in fleet.vehicles:
-		if v.task is None:
-			assignee = v
-			break
-		if v.free_at < soonest_free or soonest_free is None: ## totally ignores distance
-			assignee = v
-			soonest_free = v.free_at
-	
-	assignee.assign(task)
+	for pev in fleet:
+		if assignee is None:
+			assignee = pev
+		elif pev.soonestFreeAfter(time) < assignee.soonestFreeAfter(time):
+			assignee = pev
+	assignee.assign(task, time)

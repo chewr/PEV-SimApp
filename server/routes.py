@@ -12,7 +12,7 @@ class RouteFinder:
 		self.client = googlemaps.Client(key=api_key)
 		self.cache = {}
 
-	def get_dirs(origin, dest):
+	def get_dirs(self, origin, dest):
 		## TODO make cache persistent
 		## TODO make cache more space efficient
 		## TODO dynamic programming + graph algos for more cache hits?
@@ -20,7 +20,7 @@ class RouteFinder:
 		if (origin, dest) in self.cache:
 			return self.cache[(origin,dest)]
 		else:
-			dirs = client.directions(origin, dest, mode="bicycling")
+			dirs = self.client.directions(origin, dest, mode="bicycling")
 			self.cache[(origin, dest)] = dirs
 			return dirs
 

@@ -25,6 +25,7 @@ def readNewburyTestData():
 				start = (float(row[4]), float(row[3]))
 				dest = (float(row[8]), float(row[7]))
 				trips.append(trip.Pickup(
+					int(row[0]),
 					sim_util.timeify(row[1]),
 					start, 
 					dest,
@@ -32,7 +33,8 @@ def readNewburyTestData():
 				)
 			except ValueError:
 				pass
-	return trips
+	## sort
+	return sorted(trips, key=lambda task:task.getTimeOrdered())
 
 
 
