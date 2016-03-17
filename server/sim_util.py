@@ -1,6 +1,7 @@
 ## TODO utility functions for the simulation
 from geopy.distance import great_circle
 from time import strptime
+from collections import deque
 import datetime
 
 def center_of(bounds):
@@ -15,3 +16,9 @@ def timeify(s):
 def seconds_since_midnight(ts):
 	td = datetime.timedelta(hours=ts.tm_hour, minutes=ts.tm_min)
 	return td.seconds
+
+def default_json(o):
+	if isinstance(o, deque):
+		return list(o)
+	return o.__dict__
+

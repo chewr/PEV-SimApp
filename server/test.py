@@ -4,6 +4,7 @@
 import tripgen
 import pev_sim
 import pprint
+import sim_util
 
 import json
 
@@ -17,5 +18,5 @@ for t in testdata:
 env.schedule(None, testdata)
 
 pp = pprint.PrettyPrinter(indent=4)
-pp.pprint(env.fleet.vehicles)
-
+## pp.pprint(env.fleet.vehicles)
+print json.dumps(env, default=sim_util.default_json, separators=(',', ':'), indent=4)

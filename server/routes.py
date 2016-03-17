@@ -33,7 +33,26 @@ class Route:
 	## TODO: must delete .routes_cache when this data structure is
 	## updated
 	def __init__(self, route):
-		self.route = route[0] ## TODO handle the alternate routes?
+		self.rte = route[0]
+		## clean route
+		removals = ["warnings", "waypoint_order", "summary", "copyrights"]
+		for r in removals:
+			del self.rte[r]
+
+		## clean legs
+		leg_removals = ["end_address", "via_waypoint", "start_address"]
+		step_removals = ["html_instructions", "maneuver"]
+		for l in self.rte["legs"]:
+			for r in leg_removals:
+				del l[r]
+			for s in l["steps"]:
+				for r in step_removals:
+					try:
+						del s[r]
+					except:
+						pass
+
+		self.path = route[0]["overview_polyline"] ## TODO handle the alternate routes?
 		dist = 0
 		dur = 0
 		for l in route[0]["legs"]:
