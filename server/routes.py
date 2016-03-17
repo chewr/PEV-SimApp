@@ -30,6 +30,8 @@ class RouteFinder:
 
 class Route:
 	## TODO make more space efficient
+	## TODO: must delete .routes_cache when this data structure is
+	## updated
 	def __init__(self, route):
 		self.route = route[0] ## TODO handle the alternate routes?
 		dist = 0
