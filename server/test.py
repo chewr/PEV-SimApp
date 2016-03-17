@@ -5,6 +5,8 @@ import tripgen
 import pev_sim
 import pprint
 
+import json
+
 env = pev_sim.Sim_env(3, None, (42.3492699,-71.0900377))
 
 testdata = tripgen.readNewburyTestData()
@@ -16,3 +18,4 @@ env.schedule(None, testdata)
 
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(env.fleet.vehicles)
+

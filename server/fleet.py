@@ -14,6 +14,7 @@ class Dispatch:
 		self.route = route
 		self.dest = dest
 		self.wait_time = wait_time
+		self.route_distance = route.getDistance()
 
 	def getEndTime(self):
 		return self.end
@@ -22,13 +23,11 @@ class Dispatch:
 		return self.wait_time
 
 	def getDistance(self):
-		return routes.getRouteDistance(self.route)
+		return self.route_distance
 
 def create_dispatch(time, start, dest):
-	rte = routes.finder.get_dirs(start, dest)[0]
-	dur = 0 ## TODO account for non-instant pickups?
-	for l in rte["legs"]:
-		dur += l["duration"]["value"]
+	rte = routes.finder.get_dirs(start, dest)
+	dur = rte.getDuration()
 	return Dispatch(time, time+dur, "NAV", rte, dest, None)
 
 def dispatch_from_task(task, start_time):

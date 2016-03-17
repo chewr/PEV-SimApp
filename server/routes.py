@@ -18,24 +18,34 @@ class RouteFinder:
 			self.cache = {}
 
 	def get_dirs(self, origin, dest):
-		## TODO make cache more space efficient
 		## TODO dynamic programming + graph algos for more cache hits?
-		if (origin, dest) in self.cache:
-			return self.cache[(origin,dest)]
-		else:
-			dirs = self.client.directions(origin, dest, mode="bicycling")
-			self.cache[(origin, dest)] = dirs
-			return dirs
+		## TODO do we need to do multiple modes? (bicycling vs driving)?
+		
+		if (origin, dest) not in self.cache:
+			self.cache[(origin, dest)] = Route(self.client.directions(origin, dest, mode="bicycling"))
+		return self.cache[(origin,dest)]
 
 	def save_cache(self, cache_file):
 		pickle.dump(self.cache, open(cache_file, "wb"))
 
-def getRouteDistance(rte):
-	dist = 0
-	for l in rte["legs"]:
-		dist += l["distance"]["value"]
-	return dist
+class Route:
+	## TODO make more space efficient
+	def __init__(self, route):
+		self.route = route[0] ## TODO handle the alternate routes?
+		dist = 0
+		dur = 0
+		for l in route[0]["legs"]:
+			dist += l["distance"]["value"]
+			dur += l["duration"]["value"]
+		self.distance = dist
+		self.duration = dur
 
+	def getDistance(self):
+		return self.distance
+
+	def getDuration(self):
+		return self.duration
+		
 finder = RouteFinder("google_api_key", ".routes_cache")
 
 @atexit.register

@@ -23,12 +23,8 @@ class Pickup:
 		return sim_util.ll_dist_m(self.start_loc, self.dest_loc) / 4.47 
 		
 	def routefind(self):
-		route = routes.finder.get_dirs(self.start_loc, self.dest_loc)[0]
-		dur = 0
-		for l in route["legs"]:
-			dur += l["duration"]["value"]
-		self.duration = dur
-		self.route = route
+		self.route = routes.finder.get_dirs(self.start_loc, self.dest_loc)
+		self.duration = self.route.getDuration()
 
 	def getTimeOrdered(self):
 		return self.time_ordered
