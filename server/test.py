@@ -5,7 +5,7 @@ import tripgen
 import pev_sim
 import pprint
 
-env = pev_sim.Sim_env(10, None, (42.3492699,-71.0900377))
+env = pev_sim.Sim_env(3, None, (42.3492699,-71.0900377))
 
 testdata = tripgen.readNewburyTestData()
 

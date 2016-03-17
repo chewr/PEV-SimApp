@@ -7,26 +7,33 @@ import fsched
 import routes
 
 class Dispatch:
-	def __init__(self, start, end, kind, route, dest):
+	def __init__(self, start, end, kind, route, dest, wait_time):
 		self.start = start
 		self.end = end
 		self.kind = kind
 		self.route = route
 		self.dest = dest
+		self.wait_time = wait_time
 
 	def getEndTime(self):
 		return self.end
+
+	def getWaitTime(self):
+		return self.wait_time
+
+	def getDistance(self):
+		return routes.getRouteDistance(self.route)
 
 def create_dispatch(time, start, dest):
 	rte = routes.finder.get_dirs(start, dest)[0]
 	dur = 0 ## TODO account for non-instant pickups?
 	for l in rte["legs"]:
 		dur += l["duration"]["value"]
-	return Dispatch(time, time+dur, "NAV", rte, dest)
+	return Dispatch(time, time+dur, "NAV", rte, dest, None)
 
 def dispatch_from_task(task, start_time):
 	return Dispatch(start_time, start_time + task.getDuration(),
-		task.getType(), task.getRoute(), task.getDest())
+		task.getType(), task.getRoute(), task.getDest(), start_time - task.getTimeOrdered())
 
 class Vehicle:
 	def __init__(self, uid, is_pev, loc):
@@ -63,7 +70,10 @@ class Vehicle:
 			self.todo.append(create_dispatch(self.soonestFreeAfter(time), self.todo[-1].dest, task.getPickupLoc()))
 		else:
 			self.todo.append(create_dispatch(time, self.loc, task.getPickupLoc()))
+		wait_time = self.soonestFreeAfter(time) - task.getTimeOrdered()
 		self.todo.append(dispatch_from_task(task, self.soonestFreeAfter(time)))
+		return wait_time
+		
 
 	def soonestFreeAfter(self, t):
 		## return the soonest time that the PEV will
@@ -91,8 +101,8 @@ class Fleet:
 		t = trip.getTimeOrdered()
 		for v in self.vehicles:
 			v.update(t)
-		vid = fsched.assign(t, trip, self)
-		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid)
+		(vid, wait) = fsched.assign(t, trip, self)
+		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
 
 	def __getitem__(self, key):
 		return self.vehicles[key]
