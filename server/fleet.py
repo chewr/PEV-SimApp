@@ -58,7 +58,6 @@ class Vehicle:
 			
 		## TODO implement - update task,
 		## set location if necessary
-		## raise(NotImplementedError)
 
 	def assign(self, task, time):
 		## TODO create the arrival Dispatch
@@ -84,6 +83,29 @@ class Vehicle:
 
 	def getUID(self):
 		return self.uid
+
+	def getActionAt(self, time_window):
+		## TODO return PASSENGER, PARCEL, BOTH, or NONE depending
+		## on what the vehicle is being used for in that window
+		passenger = False
+		parcel = False
+		## TODO binary search for efficiency (?)
+		for d in self.history:
+			if d.start > time_window[1]:
+				break
+			elif d.end >= time_window[0]:
+				if d.kind == "PASSENGER":
+					passenger = True
+				elif d.kind == "PARCEL":
+					parcel = True
+		if passenger and parcel:
+			return "BOTH"
+		elif passenger:
+			return "PASSENGER"
+		elif parcel:
+			return "PARCEL"
+		else:
+			return None
 			
 
 class Fleet:
@@ -102,6 +124,23 @@ class Fleet:
 			v.update(t)
 		(vid, wait) = fsched.assign(t, trip, self)
 		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
+
+	## returns the utilization (Passengers/packages) at time t
+	def getUtilization(self, time_window):
+		## TODO make more efficient by just bisecting the fleet history
+		denom = len(self.vehicles)
+		passengers = 0
+		parcels = 0
+		for v in vehicles:
+			action = v.getActionAt(time_window)
+			if action == "PASSENGER":
+				passengers += 1
+			elif action == "PARCEL":
+				parcels += 1
+			elif action == "BOTH":
+				passengers += 1
+				parcels += 1
+		return (float(passengers) / denom, float(parcels) / denom)
 
 	def __getitem__(self, key):
 		return self.vehicles[key]
