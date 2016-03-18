@@ -18,7 +18,5 @@ def seconds_since_midnight(ts):
 	return td.seconds
 
 def default_json(o):
-	if isinstance(o, deque):
-		return list(o)
 	return o.__dict__
 

@@ -2,7 +2,6 @@
 
 import sim_util as util
 import trip
-from collections import deque
 import fsched
 import routes
 
