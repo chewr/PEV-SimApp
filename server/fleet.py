@@ -56,7 +56,6 @@ class Vehicle:
 	def update(self, time):
 		## The purpose of this method is to set the current loc (in case we use it in the future)
 		## and to ensure that IDLE is appended if we finish everything.
-		print str(time)
 		while len(self.history) > self.current and self.history[self.current].end <= time:
 			if self.history[self.current].end == -1:
 				break
@@ -64,7 +63,7 @@ class Vehicle:
 			self.current += 1
 		if self.current == len(self.history):
 			self.history.append(idle_dispatch(self.history[-1].end, self.loc))
-		self.check_valid()
+		## self.check_valid()
 
 	def assign(self, task, time):
 		if self.history[-1].kind == "IDLE":
