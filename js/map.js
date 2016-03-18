@@ -239,46 +239,57 @@ function animateLines() {
     var finished = 0;
 
     lines.forEach(function(line) {
+        // Prepare the circular symbol for the bike or taxi
         var lineSymbol = {
             path: Maps.SymbolPath.CIRCLE,
             scale: 8,
             strokeColor: line.strokeColor,
         };
+        
+        // add the circular symbol to the line
         line.icons.push({
             icon: lineSymbol,
-            offset: "0%",
+            offset: "0%", // at the starting position
         });
-        var count = 0;
-        var interval;
+        
+
+        var count = 0; // Time step
+        var interval; // basically a frame of rendering
 
         interval = window.setInterval(function() {
         	if (!interval) {
         		return;
         	}
+            
+            // increment the time step (seconds of real time)
             count += 5;
-            if (count > line.travelTime.value) {
+            if (count > line.travelTime.value) { // check if the trip finished
+                // and clear the icon; the vehicle can disappear
                 window.clearInterval(interval);
                 finished += 1;
                 interval = undefined;
 
-                if (finished === lines.length) {
+                if (finished === lines.length) { // if all the lines at this step are done
+                    // proceed to rendering the next trip
                  tripChanged(trips[++t]);
-                 $("ol#trip-list li:nth-child(" + (t + 1) + ")").css("opacity", "1");
+                 $("ol#trip-list li:nth-child(" + (t + 1) + ")").css("opacity", "1"); // some jquery I don't understand
                  lines.forEach(function(polyline) {
-                  accumulator(polyline);
+                  accumulator(polyline); // I think this is just unused statistics stuff
               });
                  lines.forEach(function(polyline) {
-                    polyline.setMap(null);
+                    polyline.setMap(null); // stop drawing it I think?
                 });
-                 lines = [];
+                 lines = []; // and... ? probably clear it since it's a global variable (yay?)
                  return;
              }
          }
+         // whether the trip is finished or not...
+            // update lines.icons[0] (which I think is the only icon [?]) to have advanced a percentage of the trip
          var icons = line.get('icons');
          icons[0].offset = ( (count / line.travelTime.value) * 100 ) + '%';
          line.set('icons', icons);
-     }, 20);
-        intervals.push(interval);
+     }, 20); // ms per interval
+        intervals.push(interval); // ...and push intervals? maybe this is necessary to render?
     });
 }
 
