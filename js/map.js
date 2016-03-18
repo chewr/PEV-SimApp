@@ -231,6 +231,56 @@ function accumulator(mark) {
     $("p#drive-dist").html(dDist + " meters");
 }
 
+function animateCars() {
+    // like animateLines but for cars with a schedule of many things to do
+
+    // first clear the intervals
+    for (var i = 0; i < intervals.length; i++) {
+        window.clearInterval(intervals[n]);
+    }
+    
+    cars.forEach(drawCarStuff);
+}
+
+function drawCarStuff(car) {
+    var carSymbol = {
+        path: Maps.SymbolPath.CIRCLE,
+        scale: 8,
+        strokeColor: car.currentTask.strokeColor,
+    };
+    
+    var tstep = 0; // time step
+    var interval; // I guess I declare this to have a static reference?
+
+    interval = window.setInterval(function() {
+       if (!interval) {
+           return;
+       } 
+        
+        tstep += 5; // how many real-time seconds each frame is
+        
+        // update the car to the tstep
+        updateCarAtTstep(car, tstep);
+        
+        //  various tasks:
+        //    Car is going somewhere
+        //      draw current line and car position on it
+        //      color := package (dark green)/ passenger (light green)/navigation (de-sat green)
+        //    Car is loitering
+        //      draw car at position
+        //      color := loiter color (de-sat green)?
+        
+        
+    }, 20);
+}
+
+function updateCarAtTstep(car, tstep) {
+    if (tstep < car.currentTask.endTime) {
+        return; // still doing the same task, do nothing
+    }
+    
+}
+
 function animateLines() {
     for (var n = 0; n < intervals.length; n++) {
         window.clearInterval(intervals[n]);
@@ -286,7 +336,7 @@ function animateLines() {
          // whether the trip is finished or not...
             // update lines.icons[0] (which I think is the only icon [?]) to have advanced a percentage of the trip
          var icons = line.get('icons');
-         icons[0].offset = ( (count / line.travelTime.value) * 100 ) + '%';
+         icons[0].offset = ( (count / line.travelTime.value) * 100 ) + '%'; // google maps api stuff here
          line.set('icons', icons);
      }, 20); // ms per interval
         intervals.push(interval); // ...and push intervals? maybe this is necessary to render?
