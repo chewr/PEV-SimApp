@@ -162,6 +162,71 @@ function both() {
     start();
 }
 
+function fleet_sim() {
+//   var xmlhttp = new XMLHttpRequest();
+//    var url = "http://localhost:8233/helloworld.txt";
+//
+//    xmlhttp.onreadystatechange = function() {
+//    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+////        var myArr = JSON.parse(xmlhttp.responseText);
+////        myFunction(myArr);
+//          alert(xmlhttp.responseText);
+//        }
+//    };
+//
+//    xmlhttp.open("GET", url, true);
+//    xmlhttp.send();
+    
+    
+//    var xhr = createCORSRequest('GET', '/server/newbury_test.json');
+//    if (!xhr) {
+//      throw new Error('CORS not supported');
+//    } else {
+//        xhr.onreadystatechange = function () {
+//            if (xhr.readyState == 4 && xhr.status == 200) {
+//                var myJsonObj = JSON.parse(xhr.responseText);
+//                console.log('goo');
+//                console.log(myJsonObj);
+//                console.log('success');
+//                alert(xhr.responseText);
+//            }
+//        }
+//        xhr.send();
+//    }
+    
+    $.getJSON( "server/newbury_test.json", function( data ) {
+        console.log(data);
+        alert('success!');
+    });
+}
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    
+    xhr.open(method, url, true);
+
+  } else if (typeof XDomainRequest != "undefined") {
+
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    
+    xhr.open(method, url);
+
+  } else {
+
+    // Otherwise, CORS is not supported by the browser.
+    xhr = null;
+
+  }
+  return xhr;
+}
+
+
+
 function taxi(trip) {
     var start   = new Date(trip.start.time);
     var end     = new Date(trip.end.time);
@@ -476,7 +541,7 @@ function getRouteDistance(route) {
 }
 
 function calculateEmissions(paths) {
-    console.log(paths)
+    console.log(paths);
     for (var i = 0; i < paths.length; i++) {
     if (paths[i].request.travelMode === Maps.TravelMode.BICYCLING) {
         tot_distances[0] = getRouteDistance(paths[i].routes[0]);
