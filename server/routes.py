@@ -4,12 +4,17 @@
 import googlemaps
 import cPickle as pickle
 import atexit
+import sys
 
 class RouteFinder:
 	def __init__(self, keyfile, cache_file):
 		api_key = None
-		with open(keyfile, 'r') as f:
-			api_key = f.read().rstrip()
+		try:
+			with open(keyfile, 'r') as f:
+				api_key = f.read().rstrip()
+		except:
+			print "It looks like you need a google api key"
+			sys.exit(1)
 		self.client = googlemaps.Client(key=api_key)
 		try:
         		with open(cache_file, "rb") as c:
