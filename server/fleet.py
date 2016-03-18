@@ -41,18 +41,18 @@ class Vehicle:
 		self.loc = loc
 
 		self.history = []
-		self.todo = deque([])
+		self.current = -1
 
 		## TODO representation here
 
 	def update(self, time):
-		while self.todo:
-			if self.todo[0].end <= time:
+		while len(self.history) - 1 > self.current:
+			if self.history[self.current + 1].end <= time:
 				## update location
-				t = self.todo.popleft()
-				self.loc = t.dest
-				## move from todo to history
-				self.history.append(t)
+				self.current += 1
+
+				## advance current
+				self.loc = self.history[self.current].dest
 			else:
 				break
 			
@@ -64,22 +64,22 @@ class Vehicle:
 		## and add to todo
 		## create the passenger/fare dispatch
 		## and add to todo
-		if self.todo:
-			self.todo.append(create_dispatch(self.soonestFreeAfter(time), self.todo[-1].dest, task.getPickupLoc()))
+		if len(self.history) - 1 > self.current:
+			self.history.append(create_dispatch(self.soonestFreeAfter(time), self.history[-1].dest, task.getPickupLoc()))
 		else:
-			self.todo.append(create_dispatch(time, self.loc, task.getPickupLoc()))
+			self.history.append(create_dispatch(time, self.loc, task.getPickupLoc()))
 		wait_time = self.soonestFreeAfter(time) - task.getTimeOrdered()
-		self.todo.append(dispatch_from_task(task, self.soonestFreeAfter(time)))
+		self.history.append(dispatch_from_task(task, self.soonestFreeAfter(time)))
 		return wait_time
 		
 
 	def soonestFreeAfter(self, t):
 		## return the soonest time that the PEV will
 		## be free after time t
-		if not self.todo:
+		if len(self.history) - 1 <= self.current:
 			return t
 		else:
-			return self.todo[-1].getEndTime()
+			return self.history[-1].getEndTime()
 
 	def getUID(self):
 		return self.uid
