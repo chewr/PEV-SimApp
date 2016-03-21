@@ -15,6 +15,7 @@ var bDist = 0;
 var dTime = 0;
 var dDist = 0;
 var taxiTime = 0;
+var sim_data;
 
 var allLines = {};
 var mode = {};
@@ -162,70 +163,17 @@ function both() {
     start();
 }
 
-function fleet_sim() {
-//   var xmlhttp = new XMLHttpRequest();
-//    var url = "http://localhost:8233/helloworld.txt";
-//
-//    xmlhttp.onreadystatechange = function() {
-//    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-////        var myArr = JSON.parse(xmlhttp.responseText);
-////        myFunction(myArr);
-//          alert(xmlhttp.responseText);
-//        }
-//    };
-//
-//    xmlhttp.open("GET", url, true);
-//    xmlhttp.send();
-    
-    
-//    var xhr = createCORSRequest('GET', '/server/newbury_test.json');
-//    if (!xhr) {
-//      throw new Error('CORS not supported');
-//    } else {
-//        xhr.onreadystatechange = function () {
-//            if (xhr.readyState == 4 && xhr.status == 200) {
-//                var myJsonObj = JSON.parse(xhr.responseText);
-//                console.log('goo');
-//                console.log(myJsonObj);
-//                console.log('success');
-//                alert(xhr.responseText);
-//            }
-//        }
-//        xhr.send();
-//    }
-    
+function fleet_sim() {   
     $.getJSON( "server/newbury_test.json", function( data ) {
         console.log(data);
-        alert('success!');
+        sim_data = data;
+        start_sim();
     });
 }
 
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  if ("withCredentials" in xhr) {
-
-    // Check if the XMLHttpRequest object has a "withCredentials" property.
-    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+function start_sim() {
     
-    xhr.open(method, url, true);
-
-  } else if (typeof XDomainRequest != "undefined") {
-
-    // Otherwise, check if XDomainRequest.
-    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-    
-    xhr.open(method, url);
-
-  } else {
-
-    // Otherwise, CORS is not supported by the browser.
-    xhr = null;
-
-  }
-  return xhr;
 }
-
-
 
 function taxi(trip) {
     var start   = new Date(trip.start.time);
