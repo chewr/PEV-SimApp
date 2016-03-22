@@ -255,18 +255,18 @@ function animateCars() {
 }
 
 function drawCarStuff(car) {
+    car.current = 0;
     var latLngLoc = {lat: car.spawn[0], lng: car.spawn[1]};
     var carMarker = new Maps.Marker({
         position: latLngLoc,
         icon: {
             path: Maps.SymbolPath.CIRCLE,
             scale: 8,
-            strokeColor: '#008888',
+            strokeColor: '#008888', // TODO color
         },
         map: map,
-        title: 'PEV'
       });
-    
+    car['curTaskRender'] = carMarker;
     
     var tstep = 0; // time step
     var interval; // I guess I declare this to have a static reference?
@@ -277,11 +277,46 @@ function drawCarStuff(car) {
        } 
         
         tstep += 5; // how many real-time seconds each frame is
+        var redraw = false;
         
         // update the car to the tstep
-        updateCarAtTstep(car, tstep);
+        while (tstep >= car.history[car.current].end) {
+            car.current++;
+            redraw = true;
+            if (car.current >= car.history.length) {
+                // What do we do when we're at the end of the sim?
+                return;
+            }
+        }
         
-        //  various tasks:
+        
+        //  various tasks - based on car.history[car.current]
+        switch(car.history[car.current].kind) {
+            case 'IDLE':
+                if (redraw) {
+                    var loc = {lat: car.history[car.current].dest[0], lng: car.history[car.current].dest[1]};
+                    var carMarker = new Maps.Marker({
+                        position: loc,
+                        icon: {
+                            path: Maps.SymbolPath.CIRCLE,
+                            scale: 8,
+                            strokeColor: '#008888', // TODO color
+                        },
+                      });
+                    car.curTaskRender.setMap(null);
+                    car.curTaskRender = carMarker;
+                    car.curTaskRender.setMap(map);
+                }
+                break;
+            case 'NAV':
+                break;
+            case 'PASSENGER':
+                break;
+            case 'PARCEL':
+                break;
+            default:
+                alert('error');
+        }
         //    Car is going somewhere
         //      draw current line and car position on it
         //      color := package (dark green)/ passenger (light green)/navigation (de-sat green)
@@ -292,13 +327,6 @@ function drawCarStuff(car) {
         
     }, 20);
     intervals.push(interval);
-}
-
-function updateCarAtTstep(car, tstep) {
-    if (tstep < car.history[car.current].end) {
-        return; // still doing the same task, do nothing
-    }
-    
 }
 
 function animateLines() {
