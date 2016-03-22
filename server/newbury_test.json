@@ -7,13 +7,17 @@
     "fleet":{
         "vehicles":[
             {
-                "current":43,
+                "spawn":[
+                    42.3492699,
+                    -71.0900377
+                ],
                 "loc":[
                     42.337032,
                     -71.076032
                 ],
                 "uid":0,
                 "is_pev":true,
+                "current":43,
                 "history":[
                     {
                         "kind":"IDLE",
@@ -8558,13 +8562,17 @@
                 ]
             },
             {
-                "current":18,
+                "spawn":[
+                    42.3492699,
+                    -71.0900377
+                ],
                 "loc":[
                     42.3503,
                     -71.079795
                 ],
                 "uid":1,
                 "is_pev":true,
+                "current":18,
                 "history":[
                     {
                         "kind":"IDLE",
@@ -11931,13 +11939,17 @@
                 ]
             },
             {
-                "current":3,
+                "spawn":[
+                    42.3492699,
+                    -71.0900377
+                ],
                 "loc":[
                     42.356642,
                     -71.053715
                 ],
                 "uid":2,
                 "is_pev":true,
+                "current":3,
                 "history":[
                     {
                         "kind":"IDLE",
@@ -12408,3 +12420,4 @@
         ]
     }
 }
+exiting...

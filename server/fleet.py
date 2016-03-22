@@ -46,6 +46,7 @@ class Vehicle:
 	def __init__(self, uid, is_pev, loc):
 		self.uid = uid
 		self.is_pev = is_pev
+		self.spawn = loc
 		self.loc = loc
 
 		self.history = [idle_dispatch(0, loc)]

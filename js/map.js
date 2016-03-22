@@ -107,6 +107,7 @@ function day() {
         time++;
         
     }, 1000);
+    alert('b2');
 }
 
 function makeTimeLines() {
@@ -164,15 +165,11 @@ function both() {
 }
 
 function fleet_sim() {   
-    $.getJSON( "server/newbury_test.json", function( data ) {
+    $.getJSON( 'server/newbury_test.json', function( data ) {
         console.log(data);
         sim_data = data;
-        start_sim();
+        animateCars();
     });
-}
-
-function start_sim() {
-    
 }
 
 function taxi(trip) {
@@ -251,16 +248,25 @@ function animateCars() {
     for (var i = 0; i < intervals.length; i++) {
         window.clearInterval(intervals[n]);
     }
-    
-    cars.forEach(drawCarStuff);
+    // TODO how do I extract and render statistics at the frame level?
+    // Should I just check and update every time a car finishes a trip or
+    // something (and have a callback)
+    sim_data.fleet.vehicles.forEach(drawCarStuff);
 }
 
 function drawCarStuff(car) {
-    var carSymbol = {
-        path: Maps.SymbolPath.CIRCLE,
-        scale: 8,
-        strokeColor: car.currentTask.strokeColor,
-    };
+    var latLngLoc = {lat: car.spawn[0], lng: car.spawn[1]};
+    var carMarker = new Maps.Marker({
+        position: latLngLoc,
+        icon: {
+            path: Maps.SymbolPath.CIRCLE,
+            scale: 8,
+            strokeColor: '#008888',
+        },
+        map: map,
+        title: 'PEV'
+      });
+    
     
     var tstep = 0; // time step
     var interval; // I guess I declare this to have a static reference?
@@ -285,10 +291,11 @@ function drawCarStuff(car) {
         
         
     }, 20);
+    intervals.push(interval);
 }
 
 function updateCarAtTstep(car, tstep) {
-    if (tstep < car.currentTask.endTime) {
+    if (tstep < car.history[car.current].end) {
         return; // still doing the same task, do nothing
     }
     
@@ -532,6 +539,7 @@ function tripChanged(trip) {
                 // TODO total trip distances and calculate emissions
                 calculateEmissions(res)
                 drawPaths(res, origin, trip.id);
+                alert('breakpt');
                 animateLines();
             }
         }
@@ -550,7 +558,7 @@ function tripChanged(trip) {
             travelMode:  Maps.TravelMode.BICYCLING,
         }, dirfunc);
     }
-    drawEmissionChart(emissions)
+    drawEmissionChart(emissions);
 }
 
 
