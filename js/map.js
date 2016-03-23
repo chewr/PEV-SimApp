@@ -277,24 +277,29 @@ function drawCarStuff(car) {
        } 
         
         tstep += 5; // how many real-time seconds each frame is
-        var redraw = false;
+        var newTask = false;
+        
+        if (car.current >= car.history.length) {
+            return;
+        }
         
         // update the car to the tstep
         while (tstep >= car.history[car.current].end) {
             car.current++;
-            redraw = true;
+            newTask = true;
             if (car.current >= car.history.length) {
                 // What do we do when we're at the end of the sim?
                 return;
             }
         }
         
+        var ctask = car.history[car.current];
         
         //  various tasks - based on car.history[car.current]
         switch(car.history[car.current].kind) {
             case 'IDLE':
-                if (redraw) {
-                    var loc = {lat: car.history[car.current].dest[0], lng: car.history[car.current].dest[1]};
+                if (newTask) {
+                    var loc = {lat: ctask.dest[0], lng: ctask.dest[1]};
                     var carMarker = new Maps.Marker({
                         position: loc,
                         icon: {
@@ -309,8 +314,63 @@ function drawCarStuff(car) {
                 }
                 break;
             case 'NAV':
+                if (newTask) {
+                    // Draw a line from the car's polyline
+                    var polyline = new Maps.Polyline({
+                        path: [],
+                        icons: [],
+                        strokeColor: '#008080',
+                        strokeOpacity: 0.5,
+                        strokeWeight: 7,
+                    });
+
+                    // Credits to http://www.geocodezip.com/V3_Polyline_from_directions.html
+                    // var path = ctask.route.rte.overview_polyline.points;
+                    var legs = ctask.route.rte.legs;
+                    for (var i = 0; i < legs.length; i++) {
+                        var steps = legs[i].steps;
+                        for (var j = 0; j < steps.length; j++) {
+                            var nextSegment = steps[j].polyline;
+                            for (var k = 0; k < nextSegment.length; k++) {
+                                polyline.getPath().push(nextSegment[k]);
+//                                bounds.extend(nextSegment[k]);
+                            }
+                        }
+                    }
+
+//                    polyline.travelMode     = paths[p].request.travelMode;
+//                    polyline.travelDistance = ctask.route.distance;
+//                    polyline.travelTime     = ctask.route.duration;
+                    polyline.setMap(map);
+                    
+                    //
+                    var lineSymbol = {
+                        path: Maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        strokeColor: '#008080',
+                    };
+
+                    // add the circular symbol to the line
+                    polyline.icons.push({
+                        icon: lineSymbol,
+                        offset: "0%", // at the starting position
+                    });
+                    //
+                    
+                    car.curTaskRender.setMap(null);
+                    car.curTaskRender = polyline;
+
+                } else {
+                    var icons = car.curTaskRender.get('icons');
+                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    car.curTaskRender.set('icons', icons);
+                }
+                car.curTaskRender.setMap(map);
                 break;
             case 'PASSENGER':
+                if (newTask) {
+                    
+                }
                 break;
             case 'PARCEL':
                 break;
@@ -430,6 +490,7 @@ function drawPaths(paths, origin, id) {
         // Credits to http://www.geocodezip.com/V3_Polyline_from_directions.html
         var path = paths[p].routes[0].overview_path;
         var legs = paths[p].routes[0].legs;
+        console.log(paths[p].routes[0]);
         for (var i = 0; i < legs.length; i++) {
             var steps = legs[i].steps;
             for (var j = 0; j < steps.length; j++) {
