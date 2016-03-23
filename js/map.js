@@ -314,12 +314,13 @@ function drawCarStuff(car) {
                 }
                 break;
             case 'NAV':
+                var color = '#008080';
                 if (newTask) {
                     // Draw a line from the car's polyline
                     var polyline = new Maps.Polyline({
                         path: [],
                         icons: [],
-                        strokeColor: '#008080',
+                        strokeColor: color,
                         strokeOpacity: 0.5,
                         strokeWeight: 7,
                     });
@@ -330,24 +331,20 @@ function drawCarStuff(car) {
                     for (var i = 0; i < legs.length; i++) {
                         var steps = legs[i].steps;
                         for (var j = 0; j < steps.length; j++) {
-                            var nextSegment = steps[j].polyline;
+                            var nextSegment = google.maps.geometry.encoding.decodePath(steps[j].polyline.points);
                             for (var k = 0; k < nextSegment.length; k++) {
                                 polyline.getPath().push(nextSegment[k]);
-//                                bounds.extend(nextSegment[k]);
                             }
                         }
                     }
 
-//                    polyline.travelMode     = paths[p].request.travelMode;
-//                    polyline.travelDistance = ctask.route.distance;
-//                    polyline.travelTime     = ctask.route.duration;
                     polyline.setMap(map);
                     
                     //
                     var lineSymbol = {
                         path: Maps.SymbolPath.CIRCLE,
                         scale: 8,
-                        strokeColor: '#008080',
+                        strokeColor: color,
                     };
 
                     // add the circular symbol to the line
@@ -368,11 +365,106 @@ function drawCarStuff(car) {
                 car.curTaskRender.setMap(map);
                 break;
             case 'PASSENGER':
+                var color = '#F0F000';
                 if (newTask) {
+                    // Draw a line from the car's polyline
+                    var polyline = new Maps.Polyline({
+                        path: [],
+                        icons: [],
+                        strokeColor: color,
+                        strokeOpacity: 0.5,
+                        strokeWeight: 7,
+                    });
+
+                    // Credits to http://www.geocodezip.com/V3_Polyline_from_directions.html
+                    // var path = ctask.route.rte.overview_polyline.points;
+                    var legs = ctask.route.rte.legs;
+                    for (var i = 0; i < legs.length; i++) {
+                        var steps = legs[i].steps;
+                        for (var j = 0; j < steps.length; j++) {
+                            var nextSegment = google.maps.geometry.encoding.decodePath(steps[j].polyline.points);
+                            for (var k = 0; k < nextSegment.length; k++) {
+                                polyline.getPath().push(nextSegment[k]);
+                            }
+                        }
+                    }
+
+                    polyline.setMap(map);
                     
+                    //
+                    var lineSymbol = {
+                        path: Maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        strokeColor: color,
+                    };
+
+                    // add the circular symbol to the line
+                    polyline.icons.push({
+                        icon: lineSymbol,
+                        offset: "0%", // at the starting position
+                    });
+                    //
+                    
+                    car.curTaskRender.setMap(null);
+                    car.curTaskRender = polyline;
+
+                } else {
+                    var icons = car.curTaskRender.get('icons');
+                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    car.curTaskRender.set('icons', icons);
                 }
+                car.curTaskRender.setMap(map);
                 break;
             case 'PARCEL':
+                var color = '#FFA500'
+                if (newTask) {
+                    // Draw a line from the car's polyline
+                    var polyline = new Maps.Polyline({
+                        path: [],
+                        icons: [],
+                        strokeColor: color,
+                        strokeOpacity: 0.5,
+                        strokeWeight: 7,
+                    });
+
+                    // Credits to http://www.geocodezip.com/V3_Polyline_from_directions.html
+                    // var path = ctask.route.rte.overview_polyline.points;
+                    var legs = ctask.route.rte.legs;
+                    for (var i = 0; i < legs.length; i++) {
+                        var steps = legs[i].steps;
+                        for (var j = 0; j < steps.length; j++) {
+                            var nextSegment = google.maps.geometry.encoding.decodePath(steps[j].polyline.points);
+                            for (var k = 0; k < nextSegment.length; k++) {
+                                polyline.getPath().push(nextSegment[k]);
+                            }
+                        }
+                    }
+
+                    polyline.setMap(map);
+                    
+                    //
+                    var lineSymbol = {
+                        path: Maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        strokeColor: color,
+                    };
+
+                    // add the circular symbol to the line
+                    polyline.icons.push({
+                        icon: lineSymbol,
+                        offset: "0%", // at the starting position
+                    });
+                    //
+                    
+                    car.curTaskRender.setMap(null);
+                    car.curTaskRender = polyline;
+
+                } else {
+                    var icons = car.curTaskRender.get('icons');
+                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    car.curTaskRender.set('icons', icons);
+                }
+                car.curTaskRender.setMap(map);
                 break;
             default:
                 alert('error');
