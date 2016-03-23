@@ -15,7 +15,12 @@ var bDist = 0;
 var dTime = 0;
 var dDist = 0;
 var taxiTime = 0;
+
 var sim_data;
+var sim_tstep = 5;
+var sim_framestep = 20;
+
+//var sim_graphics = [];
 
 var allLines = {};
 var mode = {};
@@ -242,12 +247,70 @@ function accumulator(mark) {
 }
 
 function animateCars() {
-    // like animateLines but for cars with a schedule of many things to do
+    // like animateLines but for cars with a schedule of many things to do    
 
     // first clear the intervals
     for (var i = 0; i < intervals.length; i++) {
         window.clearInterval(intervals[n]);
     }
+    
+//    sim_graphics.forEach(function(marker) {
+//        marker.setMap(null);
+//    });
+//    
+//    sim_graphics = [];
+    
+    var tstep = 0;
+    var interval;
+    
+    var sim_factor = 12;
+    
+    sim_data['curTask'] = 0;
+    
+    interval = window.setInterval(function() {
+        if (!interval) {
+            return;
+        }
+        
+        tstep += sim_tstep * sim_factor;
+        
+        if (sim_data.curTask >= sim_data.trips.length) {
+            return;
+        }
+        
+        while (tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
+            // draw the caller
+            // xxx
+            var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
+            var marker = new Maps.Marker({
+                position: origin,
+                map: map,
+                icon: {
+                    path: fontawesome.markers.CHILD,
+                    scale: 0.5,
+                    strokeWeight: 0.1,
+                    strokeColor: '#FFFF00',
+                    strokeOpacity: 1,
+                    fillColor: '#FFFF00',
+                    fillOpacity: 1
+                },
+                clickable: false,
+            });
+            marker.info = {};
+            
+//            sim_graphics.push(marker);
+            
+            sim_data.curTask++;
+            if (sim_data.curTask >= sim_data.trips.length) {
+                return;
+            }
+        }
+        
+        // TODO disappear old tasks that have completed
+        
+    }, sim_framestep * sim_factor);
+    intervals.push(interval);
+    
     // TODO how do I extract and render statistics at the frame level?
     // Should I just check and update every time a car finishes a trip or
     // something (and have a callback)
@@ -262,7 +325,7 @@ function drawCarStuff(car) {
         icon: {
             path: Maps.SymbolPath.CIRCLE,
             scale: 8,
-            strokeColor: '#008888', // TODO color
+            strokeColor: '#008080', // TODO color
         },
         map: map,
       });
@@ -276,7 +339,7 @@ function drawCarStuff(car) {
            return;
        } 
         
-        tstep += 5; // how many real-time seconds each frame is
+        tstep += sim_tstep; // how many real-time seconds each frame is
         var newTask = false;
         
         if (car.current >= car.history.length) {
@@ -305,7 +368,7 @@ function drawCarStuff(car) {
                         icon: {
                             path: Maps.SymbolPath.CIRCLE,
                             scale: 8,
-                            strokeColor: '#008888', // TODO color
+                            strokeColor: '#008080', // TODO color
                         },
                       });
                     car.curTaskRender.setMap(null);
@@ -347,7 +410,7 @@ function drawCarStuff(car) {
                 break;
             case 'PARCEL':
                 if (newTask) {
-                    ctask['color'] = '#FFA500'
+                    ctask['color'] = '#FF8000'
                     // Draw a line from the car's polyline
                     var polyline = polylineFromTask(ctask);
                     
@@ -372,7 +435,7 @@ function drawCarStuff(car) {
         //      color := loiter color (de-sat green)?
         
         
-    }, 20);
+    }, sim_framestep);
     intervals.push(interval);
 }
 

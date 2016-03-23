@@ -16,11 +16,15 @@ class Sim_env:
 		self.emissions = []
 		self.wait_times = []
 
+		self.trips = []
+
 	def schedule(self, start_time, trips):
 		## trips is a sorted list of Trip objects,
 		## sorted by pickup time
 		for t in trips:
 			self.fleet.assign_task(t)
+
+		self.trips.extend(trips);
 
 		## TODO update sim_end
 		## TODO time series statistics
@@ -40,3 +44,4 @@ class Sim_env:
 
 		## For getting wait times:
 		## TODO: strategerize this one?
+
