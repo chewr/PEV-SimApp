@@ -20,6 +20,15 @@ var sim_data;
 var sim_tstep = 5;
 var sim_framestep = 20;
 
+var sim_hm_passStart;
+var sim_hm_passEnd;
+var sim_hm_parcStart;
+var sim_hm_parcEnd;
+var sim_passDropoffs = new Maps.MVCArray([]);
+var sim_passPickups = new Maps.MVCArray([]);
+var sim_parcDropoffs = new Maps.MVCArray([]);
+var sim_parcPickups = new Maps.MVCArray([]);
+
 //var sim_graphics = [];
 
 var allLines = {};
@@ -246,6 +255,28 @@ function accumulator(mark) {
     $("p#drive-dist").html(dDist + " meters");
 }
 
+function initHeatmaps() {
+    sim_hm_passEnd = new Maps.visualization.HeatmapLayer({
+        data: sim_passDropoffs,
+        map: map,
+    });
+    
+    sim_hm_passStart = new Maps.visualization.HeatmapLayer({
+        data: sim_passPickups,
+        map: map,
+    });
+    
+    sim_hm_parcStart = new Maps.visualization.HeatmapLayer({
+        data: sim_parcPickups,
+        map: map,
+    });
+    
+    sim_hm_parcEnd = new Maps.visualization.HeatmapLayer({
+        data: sim_parcDropoffs,
+        map: map,
+    });
+}
+
 function animateCars() {
     // like animateLines but for cars with a schedule of many things to do    
 
@@ -254,11 +285,7 @@ function animateCars() {
         window.clearInterval(intervals[n]);
     }
     
-//    sim_graphics.forEach(function(marker) {
-//        marker.setMap(null);
-//    });
-//    
-//    sim_graphics = [];
+    initHeatmaps();
     
     var tstep = 0;
     var interval;
@@ -347,17 +374,38 @@ function drawCarStuff(car) {
         }
         
         // update the car to the tstep
-        while (tstep >= car.history[car.current].end) {
+        var ctask = car.history[car.current]
+        while (tstep >= ctask.end) {
+            if (ctask.kind == "PASSENGER") {
+                // TODO Find good gaussian icon
+                var dest = new Maps.LatLng(ctask.dest[0], ctask.dest[1]);
+                sim_passDropoffs.push(dest);
+            }
+            else if (ctask.kind == "PARCEL") {
+                // TODO set dropoff icon at ctask.dest
+            }
             car.current++;
             newTask = true;
             if (car.current >= car.history.length) {
                 // What do we do when we're at the end of the sim?
+                // TODO
+                var loc = {lat: ctask.dest[0], lng: ctask.dest[1]};
+                var carMarker = new Maps.Marker({
+                    position: loc,
+                    icon: {
+                        path: Maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        strokeColor: '#008080', // TODO color
+                    },
+                  });
+                car.curTaskRender.setMap(null);
+                car.curTaskRender = carMarker;
+                car.curTaskRender.setMap(map);
                 return;
             }
+            ctask = car.history[car.current];
         }
-        
-        var ctask = car.history[car.current];
-        
+                
         //  various tasks - based on car.history[car.current]
         switch(car.history[car.current].kind) {
             case 'IDLE':
