@@ -17,8 +17,8 @@ var dDist = 0;
 var taxiTime = 0;
 
 var sim_data;
-var sim_tstep = 5;
-var sim_framestep = 20;
+var sim_tstep = 8;
+var sim_framestep = 50;
 
 var sim_hm_passStart;
 var sim_hm_passEnd;
@@ -259,11 +259,15 @@ function initHeatmaps() {
     sim_hm_passEnd = new Maps.visualization.HeatmapLayer({
         data: sim_passDropoffs,
         map: map,
+        radius: 30,
+        opacity: .3,
     });
     
     sim_hm_passStart = new Maps.visualization.HeatmapLayer({
         data: sim_passPickups,
         map: map,
+        radius: 30,
+        opacity: .3,
     });
     
     sim_hm_parcStart = new Maps.visualization.HeatmapLayer({
@@ -293,6 +297,7 @@ function animateCars() {
     var sim_factor = 12;
     
     sim_data['curTask'] = 0;
+    sim_data['oldTask'] = 0;
     
     interval = window.setInterval(function() {
         if (!interval) {
@@ -301,39 +306,53 @@ function animateCars() {
         
         tstep += sim_tstep * sim_factor;
         
-        if (sim_data.curTask >= sim_data.trips.length) {
-            return;
-        }
-        
-        while (tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
-            // draw the caller
-            // xxx
-            var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
-            var marker = new Maps.Marker({
-                position: origin,
-                map: map,
-                icon: {
-                    path: fontawesome.markers.CHILD,
-                    scale: 0.5,
-                    strokeWeight: 0.1,
-                    strokeColor: '#FFFF00',
-                    strokeOpacity: 1,
-                    fillColor: '#FFFF00',
-                    fillOpacity: 1
-                },
-                clickable: false,
-            });
-            marker.info = {};
-            
-//            sim_graphics.push(marker);
-            
-            sim_data.curTask++;
-            if (sim_data.curTask >= sim_data.trips.length) {
-                return;
+        if (sim_data.curTask < sim_data.trips.length) {        
+
+            while (tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
+                // draw the caller
+                // xxx
+                var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
+                var marker = new Maps.Marker({
+                    position: origin,
+                    map: map,
+                    icon: {
+                        path: fontawesome.markers.CHILD,
+                        scale: 0.5,
+                        strokeWeight: 0.1,
+                        strokeColor: '#FFFF00',
+                        strokeOpacity: 1,
+                        fillColor: '#FFFF00',
+                        fillOpacity: 1
+                    },
+                    clickable: false,
+                });
+                marker.info = {};
+                sim_data.trips[sim_data.curTask]['marker'] = marker;
+
+                sim_data.curTask++;
+                if (sim_data.curTask >= sim_data.trips.length) {
+                    break;
+                }
             }
         }
         
-        // TODO disappear old tasks that have completed
+        if (sim_data.oldTask < sim_data.trips.length) {
+            // disappear old tasks that have completed
+            while (tstep >= sim_data.trips[sim_data.oldTask].pickup) {
+                sim_data.trips[sim_data.oldTask].marker.setMap(null);
+                if (sim_data.trips[sim_data.oldTask].is_human) {
+                    sim_passPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
+                } else {
+                    sim_parcPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
+                }
+                sim_data.trips[sim_data.oldTask].marker = null; // go ahead and garbage collect
+
+                sim_data.oldTask++;
+                if (sim_data.oldTask >= sim_data.trips.length) {
+                    break;
+                }
+            }
+        }
         
     }, sim_framestep * sim_factor);
     intervals.push(interval);
