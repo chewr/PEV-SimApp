@@ -12,4 +12,5 @@ def assign(time, task, fleet):
 		elif pev.soonestFreeAfter(time) < assignee.soonestFreeAfter(time):
 			assignee = pev
 	wait_time = assignee.assign(task, time)
+	task.setPickup(wait_time)
 	return (assignee.getUID(), wait_time)

@@ -1,7 +1,128 @@
 {
     "sim_end":0,
     "bounds":null,
-    "util":[],
+    "util":[
+        [
+            0.08453703703703704,
+            0.0,
+            0.09833333333333333
+        ],
+        [
+            0.10324074074074074,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.011111111111111112
+        ],
+        [
+            0.050555555555555555,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.0,
+            0.05555555555555555
+        ],
+        [
+            0.2577777777777778,
+            0.0,
+            0.04842592592592593
+        ],
+        [
+            0.0,
+            0.0,
+            0.06111111111111111
+        ],
+        [
+            0.21009259259259258,
+            0.0,
+            0.16148148148148148
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.040185185185185185,
+            0.0,
+            0.20981481481481482
+        ],
+        [
+            0.0,
+            0.0,
+            0.005555555555555556
+        ],
+        [
+            0.09814814814814814,
+            0.0,
+            0.010277777777777778
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.05527777777777778,
+            0.0,
+            0.025925925925925925
+        ],
+        [
+            0.10981481481481481,
+            0.0,
+            0.026296296296296293
+        ],
+        [
+            0.13953703703703704,
+            0.0,
+            0.09564814814814815
+        ],
+        [
+            0.3428703703703704,
+            0.0,
+            0.07490740740740741
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.14194444444444443,
+            0.0,
+            0.08064814814814815
+        ],
+        [
+            0.0,
+            0.0,
+            0.0
+        ]
+    ],
     "wait_times":[],
     "emissions":[],
     "fleet":{
@@ -12,12 +133,12 @@
                     -71.0900377
                 ],
                 "loc":[
-                    42.337032,
-                    -71.076032
+                    42.338368,
+                    -71.050025
                 ],
                 "uid":0,
                 "is_pev":true,
-                "current":43,
+                "current":45,
                 "history":[
                     {
                         "kind":"IDLE",
@@ -8558,6 +8679,18 @@
                         },
                         "wait_time":558,
                         "start":81618
+                    },
+                    {
+                        "kind":"IDLE",
+                        "end":82975,
+                        "route_distance":0,
+                        "dest":[
+                            42.338368,
+                            -71.050025
+                        ],
+                        "route":null,
+                        "wait_time":null,
+                        "start":82975
                     }
                 ]
             },
@@ -8567,12 +8700,12 @@
                     -71.0900377
                 ],
                 "loc":[
-                    42.3503,
-                    -71.079795
+                    42.348603,
+                    -71.086193
                 ],
                 "uid":1,
                 "is_pev":true,
-                "current":18,
+                "current":21,
                 "history":[
                     {
                         "kind":"IDLE",
@@ -11935,6 +12068,18 @@
                         },
                         "wait_time":313,
                         "start":81673
+                    },
+                    {
+                        "kind":"IDLE",
+                        "end":82975,
+                        "route_distance":0,
+                        "dest":[
+                            42.348603,
+                            -71.086193
+                        ],
+                        "route":null,
+                        "wait_time":null,
+                        "start":82024
                     }
                 ]
             },
@@ -12405,7 +12550,7 @@
                     },
                     {
                         "kind":"IDLE",
-                        "end":-1,
+                        "end":82975,
                         "route_distance":0,
                         "dest":[
                             42.356642,
@@ -12427,6 +12572,13 @@
             ],
             "uid":205135,
             "is_human":true,
+            "start_loc":[
+                42.349643,
+                -71.082467
+            ],
+            "pickup":2710,
+            "time_ordered":2280,
+            "duration":525,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -12580,13 +12732,7 @@
                 },
                 "duration":525,
                 "distance":1905
-            },
-            "time_ordered":2280,
-            "duration":525,
-            "start_loc":[
-                42.349643,
-                -71.082467
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -12595,6 +12741,13 @@
             ],
             "uid":64562,
             "is_human":true,
+            "start_loc":[
+                42.348732,
+                -71.085542
+            ],
+            "pickup":3212,
+            "time_ordered":2940,
+            "duration":567,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -12792,13 +12945,7 @@
                 },
                 "duration":567,
                 "distance":2251
-            },
-            "time_ordered":2940,
-            "duration":567,
-            "start_loc":[
-                42.348732,
-                -71.085542
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -12807,6 +12954,13 @@
             ],
             "uid":2494,
             "is_human":true,
+            "start_loc":[
+                42.348137,
+                -71.087753
+            ],
+            "pickup":3872,
+            "time_ordered":3240,
+            "duration":1115,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -13048,13 +13202,7 @@
                 },
                 "duration":1115,
                 "distance":3763
-            },
-            "time_ordered":3240,
-            "duration":1115,
-            "start_loc":[
-                42.348137,
-                -71.087753
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -13063,6 +13211,13 @@
             ],
             "uid":339205,
             "is_human":true,
+            "start_loc":[
+                42.350538,
+                -71.078685
+            ],
+            "pickup":26109,
+            "time_ordered":25080,
+            "duration":546,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -13282,13 +13437,7 @@
                 },
                 "duration":546,
                 "distance":1751
-            },
-            "time_ordered":25080,
-            "duration":546,
-            "start_loc":[
-                42.350538,
-                -71.078685
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -13297,6 +13446,13 @@
             ],
             "uid":107340,
             "is_human":true,
+            "start_loc":[
+                42.349302,
+                -71.099393
+            ],
+            "pickup":32504,
+            "time_ordered":31800,
+            "duration":627,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -13560,13 +13716,7 @@
                 },
                 "duration":627,
                 "distance":2692
-            },
-            "time_ordered":31800,
-            "duration":627,
-            "start_loc":[
-                42.349302,
-                -71.099393
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -13575,6 +13725,13 @@
             ],
             "uid":152744,
             "is_human":true,
+            "start_loc":[
+                42.350498,
+                -71.07937
+            ],
+            "pickup":33512,
+            "time_ordered":33300,
+            "duration":1434,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -13970,13 +14127,7 @@
                 },
                 "duration":1434,
                 "distance":5570
-            },
-            "time_ordered":33300,
-            "duration":1434,
-            "start_loc":[
-                42.350498,
-                -71.07937
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -13985,6 +14136,13 @@
             ],
             "uid":54293,
             "is_human":true,
+            "start_loc":[
+                42.351173,
+                -71.076937
+            ],
+            "pickup":33971,
+            "time_ordered":33660,
+            "duration":723,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -14248,13 +14406,7 @@
                 },
                 "duration":723,
                 "distance":2587
-            },
-            "time_ordered":33660,
-            "duration":723,
-            "start_loc":[
-                42.351173,
-                -71.076937
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -14263,6 +14415,13 @@
             ],
             "uid":160237,
             "is_human":true,
+            "start_loc":[
+                42.351793,
+                -71.07441
+            ],
+            "pickup":40107,
+            "time_ordered":38940,
+            "duration":682,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -14526,13 +14685,7 @@
                 },
                 "duration":682,
                 "distance":2386
-            },
-            "time_ordered":38940,
-            "duration":682,
-            "start_loc":[
-                42.351793,
-                -71.07441
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -14541,6 +14694,13 @@
             ],
             "uid":101733,
             "is_human":true,
+            "start_loc":[
+                42.35023,
+                -71.080448
+            ],
+            "pickup":40278,
+            "time_ordered":39600,
+            "duration":378,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -14672,13 +14832,7 @@
                 },
                 "duration":378,
                 "distance":1030
-            },
-            "time_ordered":39600,
-            "duration":378,
-            "start_loc":[
-                42.35023,
-                -71.080448
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -14687,6 +14841,13 @@
             ],
             "uid":86588,
             "is_human":true,
+            "start_loc":[
+                42.350942,
+                -71.077553
+            ],
+            "pickup":42170,
+            "time_ordered":41400,
+            "duration":2199,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -15324,13 +15485,7 @@
                 },
                 "duration":2199,
                 "distance":7452
-            },
-            "time_ordered":41400,
-            "duration":2199,
-            "start_loc":[
-                42.350942,
-                -71.077553
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -15339,6 +15494,13 @@
             ],
             "uid":182959,
             "is_human":true,
+            "start_loc":[
+                42.349443,
+                -71.072845
+            ],
+            "pickup":42896,
+            "time_ordered":42600,
+            "duration":179,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -15448,13 +15610,7 @@
                 },
                 "duration":179,
                 "distance":459
-            },
-            "time_ordered":42600,
-            "duration":179,
-            "start_loc":[
-                42.349443,
-                -71.072845
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -15463,6 +15619,13 @@
             ],
             "uid":72037,
             "is_human":true,
+            "start_loc":[
+                42.35042,
+                -71.079363
+            ],
+            "pickup":49966,
+            "time_ordered":47700,
+            "duration":474,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -15638,13 +15801,7 @@
                 },
                 "duration":474,
                 "distance":1609
-            },
-            "time_ordered":47700,
-            "duration":474,
-            "start_loc":[
-                42.35042,
-                -71.079363
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -15653,6 +15810,13 @@
             ],
             "uid":205806,
             "is_human":true,
+            "start_loc":[
+                42.349173,
+                -71.084118
+            ],
+            "pickup":54358,
+            "time_ordered":53940,
+            "duration":683,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -15872,13 +16036,7 @@
                 },
                 "duration":683,
                 "distance":2557
-            },
-            "time_ordered":53940,
-            "duration":683,
-            "start_loc":[
-                42.349173,
-                -71.084118
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -15887,6 +16045,13 @@
             ],
             "uid":135495,
             "is_human":true,
+            "start_loc":[
+                42.350188,
+                -71.080198
+            ],
+            "pickup":55071,
+            "time_ordered":54960,
+            "duration":377,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -16062,13 +16227,7 @@
                 },
                 "duration":377,
                 "distance":1147
-            },
-            "time_ordered":54960,
-            "duration":377,
-            "start_loc":[
-                42.350188,
-                -71.080198
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -16077,6 +16236,13 @@
             ],
             "uid":15397,
             "is_human":true,
+            "start_loc":[
+                42.352437,
+                -71.067178
+            ],
+            "pickup":63340,
+            "time_ordered":63060,
+            "duration":597,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -16252,13 +16418,7 @@
                 },
                 "duration":597,
                 "distance":2381
-            },
-            "time_ordered":63060,
-            "duration":597,
-            "start_loc":[
-                42.352437,
-                -71.067178
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -16267,6 +16427,13 @@
             ],
             "uid":104487,
             "is_human":true,
+            "start_loc":[
+                42.350552,
+                -71.07921
+            ],
+            "pickup":66464,
+            "time_ordered":66180,
+            "duration":1186,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -16530,13 +16697,7 @@
                 },
                 "duration":1186,
                 "distance":5083
-            },
-            "time_ordered":66180,
-            "duration":1186,
-            "start_loc":[
-                42.350552,
-                -71.07921
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -16545,6 +16706,13 @@
             ],
             "uid":164964,
             "is_human":true,
+            "start_loc":[
+                42.359998,
+                -71.117968
+            ],
+            "pickup":70127,
+            "time_ordered":69900,
+            "duration":1113,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -16830,13 +16998,7 @@
                 },
                 "duration":1113,
                 "distance":5171
-            },
-            "time_ordered":69900,
-            "duration":1113,
-            "start_loc":[
-                42.359998,
-                -71.117968
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -16845,6 +17007,13 @@
             ],
             "uid":83914,
             "is_human":true,
+            "start_loc":[
+                42.350887,
+                -71.077723
+            ],
+            "pickup":71606,
+            "time_ordered":71280,
+            "duration":639,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -17174,13 +17343,7 @@
                 },
                 "duration":639,
                 "distance":2364
-            },
-            "time_ordered":71280,
-            "duration":639,
-            "start_loc":[
-                42.350887,
-                -71.077723
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -17189,6 +17352,13 @@
             ],
             "uid":172656,
             "is_human":true,
+            "start_loc":[
+                42.369642,
+                -71.0206
+            ],
+            "pickup":73531,
+            "time_ordered":71520,
+            "duration":2205,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -17848,13 +18018,7 @@
                 },
                 "duration":2205,
                 "distance":7962
-            },
-            "time_ordered":71520,
-            "duration":2205,
-            "start_loc":[
-                42.369642,
-                -71.0206
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -17863,6 +18027,13 @@
             ],
             "uid":24156,
             "is_human":true,
+            "start_loc":[
+                42.349333,
+                -71.083038
+            ],
+            "pickup":73237,
+            "time_ordered":72720,
+            "duration":663,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -18214,13 +18385,7 @@
                 },
                 "duration":663,
                 "distance":2540
-            },
-            "time_ordered":72720,
-            "duration":663,
-            "start_loc":[
-                42.349333,
-                -71.083038
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -18229,6 +18394,13 @@
             ],
             "uid":69216,
             "is_human":true,
+            "start_loc":[
+                42.348557,
+                -71.086657
+            ],
+            "pickup":73612,
+            "time_ordered":73320,
+            "duration":971,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -18492,13 +18664,7 @@
                 },
                 "duration":971,
                 "distance":3208
-            },
-            "time_ordered":73320,
-            "duration":971,
-            "start_loc":[
-                42.348557,
-                -71.086657
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -18507,6 +18673,13 @@
             ],
             "uid":58933,
             "is_human":true,
+            "start_loc":[
+                42.348542,
+                -71.086445
+            ],
+            "pickup":81618,
+            "time_ordered":81060,
+            "duration":1357,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -19056,13 +19229,7 @@
                 },
                 "duration":1357,
                 "distance":4421
-            },
-            "time_ordered":81060,
-            "duration":1357,
-            "start_loc":[
-                42.348542,
-                -71.086445
-            ]
+            }
         },
         {
             "dest_loc":[
@@ -19071,6 +19238,13 @@
             ],
             "uid":111671,
             "is_human":true,
+            "start_loc":[
+                42.349802,
+                -71.072568
+            ],
+            "pickup":81673,
+            "time_ordered":81360,
+            "duration":351,
             "route":{
                 "rte":{
                     "overview_polyline":{
@@ -19158,13 +19332,7 @@
                 },
                 "duration":351,
                 "distance":1374
-            },
-            "time_ordered":81360,
-            "duration":351,
-            "start_loc":[
-                42.349802,
-                -71.072568
-            ]
+            }
         }
     ]
 }

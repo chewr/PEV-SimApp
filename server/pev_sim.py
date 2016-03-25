@@ -23,8 +23,10 @@ class Sim_env:
 		## sorted by pickup time
 		for t in trips:
 			self.fleet.assign_task(t)
+		self.fleet.finishUp()
 
 		self.trips.extend(trips);
+		self.util = self.fleet.getUtilization()
 
 		## TODO update sim_end
 		## TODO time series statistics

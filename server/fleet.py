@@ -80,7 +80,13 @@ class Vehicle:
 			errstring = "[" + str(i) + "].end " + self.history[i].kind + "= " + str(self.history[i].end) + " != [" + str(i + 1) + "].start (" + self.history[i+1].kind + " = " + str(self.history[i + 1].start)
 			assert(self.history[i].end == self.history[i + 1].start), errstring
 			
-		
+	def lastScheduledTime(self):
+		return self.history[-1].end
+
+	def finish(self, time):
+		self.update(time)
+		if self.history[-1].end == -1:
+			self.history[-1].end = time
 
 	def soonestFreeAfter(self, t):
 		## return the soonest time that the PEV will
@@ -115,7 +121,32 @@ class Vehicle:
 			return "PARCEL"
 		else:
 			return None
-			
+
+	def getUtilization(self, t_bucket):
+		out = []
+		start = self.history[0].start;
+		end = self.history[-1].end;
+		if end <= start:
+			return out
+
+		idx = 0
+		for t in xrange(start, end, t_bucket):
+			human_util = 0.
+			parcel_util = 0.
+			infra_util = 0.
+			while idx < len(self.history) and (t >= self.history[idx].end):
+				idx += 1
+			while idx < len(self.history) and (t + t_bucket > self.history[idx].start):
+				frac = float(min(t + t_bucket, self.history[idx].end) - max(t, self.history[idx].start)) / t_bucket
+				if self.history[idx].kind == "PASSENGER":
+					human_util += frac
+				elif self.history[idx].kind == "PARCEL":
+					parcel_util += frac
+				elif self.history[idx].kind == "NAV":
+					infra_util += frac
+				idx += 1
+			out.append((human_util, parcel_util, infra_util))
+		return out
 
 class Fleet:
 	def __init__(self, fleet_size, bounds, start_loc):
@@ -134,22 +165,38 @@ class Fleet:
 		(vid, wait) = fsched.assign(t, trip, self)
 		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
 
+	def finishUp(self):
+		end = 0
+		for v in self.vehicles:
+			end = max(end, v.lastScheduledTime())
+		for v in self.vehicles:
+			v.finish(end)
+
 	## returns the utilization (Passengers/packages) at time t
-	def getUtilization(self, time_window):
-		## TODO make more efficient by just bisecting the fleet history
-		denom = len(self.vehicles)
-		passengers = 0
-		parcels = 0
-		for v in vehicles:
-			action = v.getActionAt(time_window)
-			if action == "PASSENGER":
-				passengers += 1
-			elif action == "PARCEL":
-				parcels += 1
-			elif action == "BOTH":
-				passengers += 1
-				parcels += 1
-		return (float(passengers) / denom, float(parcels) / denom)
+	def getUtilization(self):
+		denom = float(len(self.vehicles))
+		utils = []
+		lenLongest = 0
+		for v in self.vehicles:
+			u = v.getUtilization(3600)
+			lenLongest = max(len(u), lenLongest)
+			utils.append(u)
+		## flatten
+		## TODO
+		out = []
+		for i in xrange(lenLongest):
+			human = 0
+			parcel = 0
+			infrastructural = 0
+			for u in utils:
+				if i < len(u):
+					human += u[i][0]
+					parcel += u[i][1]
+					infrastructural += u[i][2]
+			triple = (human / denom, parcel / denom, infrastructural / denom)
+			out.append(triple)
+		return out
+		
 
 	def __getitem__(self, key):
 		return self.vehicles[key]

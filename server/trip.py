@@ -14,6 +14,7 @@ class Pickup:
 		self.start_loc = start
 		self.dest_loc = dest
 		self.is_human = is_human
+		self.pickup = 0
 		self.routefind()
 		## TODO: differing fare priority
 		## TODO: arrival time for packages
@@ -49,3 +50,6 @@ class Pickup:
 
 	def getID(self):
 		return self.uid
+
+	def setPickup(self, wait):
+		self.pickup = self.time_ordered + wait
