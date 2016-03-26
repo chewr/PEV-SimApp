@@ -260,14 +260,16 @@ function initHeatmaps() {
         data: sim_passDropoffs,
         map: map,
         radius: 30,
-        opacity: .3,
+        opacity: .2,
     });
+    
+    // TODO adjust radius and zoom
     
     sim_hm_passStart = new Maps.visualization.HeatmapLayer({
         data: sim_passPickups,
         map: map,
         radius: 30,
-        opacity: .3,
+        opacity: .2,
     });
     
     sim_hm_parcStart = new Maps.visualization.HeatmapLayer({
