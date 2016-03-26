@@ -25,6 +25,8 @@ class Pickup:
 		
 	def routefind(self):
 		self.route = routes.finder.get_dirs(self.start_loc, self.dest_loc)
+		if self.route is None:
+			raise Exception("could not find route")
 		self.duration = self.route.getDuration()
 
 	def getTimeOrdered(self):

@@ -14,6 +14,8 @@ def timeify(s):
 	return strptime(s, "%m/%d/%y %I:%M %p") 
 
 def seconds_since_midnight(ts):
+	if type(ts) is int:
+		return ts
 	td = datetime.timedelta(hours=ts.tm_hour, minutes=ts.tm_min)
 	return td.seconds
 

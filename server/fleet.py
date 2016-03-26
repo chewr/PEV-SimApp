@@ -32,6 +32,8 @@ class Dispatch:
 
 def create_dispatch(time, start, dest):
 	rte = routes.finder.get_dirs(start, dest)
+	if rte is None:
+		raise Exception("Could not find route!")
 	dur = rte.getDuration()
 	return Dispatch(time, time+dur, "NAV", rte, dest, None)
 
