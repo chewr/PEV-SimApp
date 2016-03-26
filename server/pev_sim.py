@@ -27,6 +27,7 @@ class Sim_env:
 
 		self.trips.extend(trips);
 		self.util = self.fleet.getUtilization()
+		self.emissions = self.fleet.getEmissions()
 
 		## TODO update sim_end
 		## TODO time series statistics

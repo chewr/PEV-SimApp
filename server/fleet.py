@@ -124,6 +124,25 @@ class Vehicle:
 		else:
 			return None
 
+	def getEmissions(self, t_bucket):
+		out = []
+		start = self.history[0].start;
+		end = self.history[-1].end;
+		if end <= start:
+			return out
+
+		idx = 0
+		for t in xrange(start, end, t_bucket):
+			dist_traveled = 0
+			while idx < len(self.history) and (t >= self.history[idx].end):
+				idx += 1
+			while idx < len(self.history) and (t + t_bucket > self.history[idx].start):
+				frac = float(min(t + t_bucket, self.history[idx].end) - max(t, self.history[idx].start)) / t_bucket
+				dist_traveled += frac * self.history[idx].getDistance()
+				idx += 1
+			out.append(dist_traveled)
+		return out
+
 	def getUtilization(self, t_bucket):
 		out = []
 		start = self.history[0].start;
@@ -184,7 +203,6 @@ class Fleet:
 			lenLongest = max(len(u), lenLongest)
 			utils.append(u)
 		## flatten
-		## TODO
 		out = []
 		for i in xrange(lenLongest):
 			human = 0
@@ -198,6 +216,28 @@ class Fleet:
 			triple = (human / denom, parcel / denom, infrastructural / denom)
 			out.append(triple)
 		return out
+
+	def getEmissions(self):
+		emissionsByVehicle = []
+		lenLongest = 0
+		for v in self.vehicles:
+			ebv = v.getEmissions(3600)
+			lenLongest = max(len(ebv), lenLongest)
+			emissionsByVehicle.append(ebv)
+		out = []
+		## assume distance is in meter
+		## give emissions in kilogram of cot
+		## based on .07 kg/km
+		coeff = .07 / 1000
+		for i in xrange(lenLongest):
+			emissions = 0
+			for ebv in emissionsByVehicle:
+				if i < len(ebv):
+					emissions += ebv[i]
+			emissions = emissions * coeff
+			out.append(emissions)
+		return out
+		
 		
 
 	def __getitem__(self, key):
