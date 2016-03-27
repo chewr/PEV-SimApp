@@ -5,7 +5,7 @@ import routes
 import sim_util
 
 class Pickup:
-	def __init__(self, uid, time, start, dest, is_human):
+	def __init__(self, uid, time, start, dest, is_human, route=None):
 		self.uid = uid
 
 		## convert to seconds after midnight
@@ -15,7 +15,10 @@ class Pickup:
 		self.dest_loc = dest
 		self.is_human = is_human
 		self.pickup = 0
-		self.routefind()
+		if route is None:
+			self.routefind()
+		else:
+			self.route = route
 		## TODO: differing fare priority
 		## TODO: arrival time for packages
 

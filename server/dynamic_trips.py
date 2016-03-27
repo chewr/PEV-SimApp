@@ -1,14 +1,24 @@
 import random
 import time
 import cPickle as pickle
+import routes
 import csv
 from sets import Set
-import trip
 
 import sim_util
+import trip
 
 loc_file = ".loc_file"
 locs = Set([])
+
+class Ride:
+	def __init__(self, start, dest, dist, route):
+		self.start = start
+		self.dest = dest
+		self.dist = dist
+		self.route = route
+	def __repr__(self):
+		return repr((self.dist, self.start, self.dest))
 
 def locsFromFile(loc_csv):
 	with open(loc_csv, 'r') as c:
@@ -51,42 +61,76 @@ def getTripLocation(maxDist):
 					return (pulledPoints[i], pulledPoints[j])
 		checked = len(pulledPoints)
 		pulledPoints.extend(random.sample(locs, scaleFactor))
-		
-def generateTripsOverInterval(frequency, maxDist, start, end, is_human):
-	tripTimes = getRandomTripTimes(frequency, start, end)
-	out = []
-	ct = 0
-	for t in tripTimes:
-		(start, dest) = getTripLocation(maxDist)
-		out.append(trip.Pickup(ct, t, start, dest, is_human))
-		ct += 1
-			
-	print len(out)	
 
-def randomizedPreprocessedTrips(filename, frequency, maxDist, start, end, is_human):
+def genRides(maxDist, total):
+	f = routes.finder
+	trips = []
+	ridesFile = '.rides_def'
+	try:
+		with open(ridesFile, 'rb') as c:
+			trips = pickle.load(c)
+	except:
+		trips = []
+
+	tn = total / (maxDist / 800)
+	
+	for rideDist in xrange(0, maxDist, 800):
+		for i in xrange(tn):
+			(start, dest) = getTripLocation(rideDist)
+			rte = f.get_dirs(start, dest)
+			if rte is not None:
+				trips.append(Ride(start, dest, sim_util.ll_dist_m(start, dest), rte))
+	
+	trips.sort(key=lambda x: x.dist)
+	
+	pickle.dump(trips, open(ridesFile, 'wb'))
+		
+def randomizedPreprocessedRides(filename, frequency, maxDist, start, end):
 	trips = []
 	try:
 		with open(filename, 'rb') as c:
 			trips = pickle.load(c)
-	except:
+		trips.sort(key=lambda x: x.dist)
+	except Exception as e:
+		print "couldn't load trips file '" + filename + "'"
+		print "Encountered exception: " + str(e)
 		return []
+	print "trips loaded: " + str(len(trips))
 	tripTimes = getRandomTripTimes(frequency, start, end)
-        out = []
+	print "generating trips for " + str(len(tripTimes)) + " times"
         idx = 0
 	for t in trips:
-		idx =+ 1
-		if t.dist > maxDist:
+		idx += 1
+		if t.dist > float(maxDist):
 			break
+	print "found " + str(idx - 1) + " trips shorter than " + str(maxDist)
 	random.seed()
-	subset = random.sample(trips[:idx], len(tripTimes))
-	for i in xrange(len(tripTimes)):
-		out.append(trip.Pickup(i, subset[i].start, subset[i].dest, is_human))
-		
+	if idx - 1 < len(tripTimes):
+		rides = [random.sample(trips[:idx], 1) for i in xrange(len(tripTimes))]
+		return zip(tripTimes, rides)
+	else:
+		return zip(tripTimes, random.sample(trips[:idx], len(tripTimes)))
+	
+
+def assembleTripSim(hMaxDist, hFreq, pMaxDist, pFreq, start, end):
+	humanRiders = randomizedPreprocessedRides('.rides_def', hFreq, hMaxDist, start, end)
+	parcels = randomizedPreprocessedRides('.rides_def', pFreq, pMaxDist, start, end)
+	pickups = []
+	ids = 0
+	for h in humanRiders:
+		pickups.append(trip.Pickup(ids, h[0], h[1].start, h[1].dest, True, route=h[1].route))
+		ids += 1
+	for p in parcels:
+		pickups.append(trip.Pickup(ids, p[0], p[1].start, p[1].dest, True, route=p[1].route))
+		ids += 1
+	pickups.sort(key=lambda x: x.getTimeOrdered())
+	return pickups
 
 try:
 	with open(loc_file, "rb") as l:
 		locs = pickle.load(l)
 except IOError:
+	print "couldn't find locations file. Importing new..."
 	for i in xrange(24):
 		locsFromFile("../dataprocessing/bucketsamples/Hour_" + str(i) + "_100.csv")
 
