@@ -179,11 +179,12 @@ function both() {
 }
 
 function fleet_sim() {   
-    $.getJSON( 'server/newbury_test.json', function( data ) {
+    var postData = {};
+    $.post( 'server/newbury_test.json', '{}', function( data ) {
         console.log(data);
         sim_data = data;
         animateCars();
-    });
+    }, 'json');
 }
 
 function taxi(trip) {

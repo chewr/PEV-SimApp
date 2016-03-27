@@ -2,6 +2,10 @@
 ## TODO the server that runs the simulation. Should receive
 ## requests from the front end, dispatch the simulation,
 ## and update the front end with visualization data
+
+## server code courtesy of https://snipt.net/raw/f8ef141069c3e7ac7e0134c6b58c25bf/?nice
+## @rochacbruno
+
 import SimpleHTTPServer
 import SocketServer
 import logging
