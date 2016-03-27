@@ -4,16 +4,39 @@
 ## and update the front end with visualization data
 import SimpleHTTPServer
 import SocketServer
+import logging
+import cgi
 
-# minimal web server.  serves files relative to the
-# current directory.
+import sys
+
 
 PORT = 8233
 
-Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+
+class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+
+    def do_GET(self):
+        logging.warning("======= GET STARTED =======")
+        logging.warning(self.headers)
+        SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+
+    def do_POST(self):
+        logging.warning("======= POST STARTED =======")
+        logging.warning(self.headers)
+        form = cgi.FieldStorage(
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD':'POST',
+                     'CONTENT_TYPE':self.headers['Content-Type'],
+                     })
+        logging.warning("======= POST VALUES =======")
+        for item in form.list:
+            logging.warning(item)
+        logging.warning("\n")
+        SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+
+Handler = ServerHandler
 
 httpd = SocketServer.TCPServer(("", PORT), Handler)
 
-print "serving at port", PORT
 httpd.serve_forever()
-
