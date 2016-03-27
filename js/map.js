@@ -178,9 +178,17 @@ function both() {
     start();
 }
 
-function fleet_sim() {   
-    var postData = {};
-    $.post( 'server/newbury_test.json', '{}', function( data ) {
+function fleet_sim() {
+    var fleet_size = $('#fleetSize').val();
+    var maxDist = $('#maxTripDist').val();
+    var parcelFreq = $('#parcelAmount').val();
+    var sim_params = {
+        size: fleet_size,
+        maxDist: maxDist,
+        parcels: parcelFreq,
+    };
+    console.log(sim_params);
+    $.post( 'server/newbury_test.json', JSON.stringify(sim_params), function( data ) {
         console.log(data);
         sim_data = data;
         animateCars();

@@ -9,7 +9,7 @@
 import SimpleHTTPServer
 import SocketServer
 import logging
-import cgi
+import json
 
 import sys
 
@@ -26,18 +26,26 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         logging.warning("======= POST STARTED =======")
+	logging.warning(" PATH: " + self.path)
         logging.warning(self.headers)
-        form = cgi.FieldStorage(
-            fp=self.rfile,
-            headers=self.headers,
-            environ={'REQUEST_METHOD':'POST',
-                     'CONTENT_TYPE':self.headers['Content-Type'],
-                     })
         logging.warning("======= POST VALUES =======")
-        for item in form.list:
-            logging.warning(item)
+
+	length = int(self.headers['Content-Length'])
+	data = self.rfile.read(length)
+	logging.warning("Received: " + data)
         logging.warning("\n")
-        SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+	if self.path == "/fleetsim":
+		## do fleet sim stuff
+		args = json.loads(data)
+		fleet_size = int(args["size"])
+		(dist, units) = args["maxDist"].split()
+		maxDist = int(dist) * 1600
+		parcFreq = int(args["parcels"].split()[0])
+		print fleet_size
+		print maxDist
+		print parcFreq
+	else:
+        	SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 Handler = ServerHandler
 
