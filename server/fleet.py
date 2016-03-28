@@ -191,7 +191,7 @@ class Fleet:
 			(vid, wait) = fsched.assign(t, trip, self)
 			print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
 		except:
-			print "Unable to assign task " + + str(trip.getID()) + " to any vehicle"
+			print "Unable to assign task " + str(trip.getID()) + " to any vehicle"
 
 	def finishUp(self):
 		end = 0
