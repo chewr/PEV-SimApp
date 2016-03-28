@@ -331,8 +331,8 @@ function zipUtilization() {
             });
             util_parc.push({
                 x: i,
-                y: sim_data.util[i][1],
-                y0: 0,
+                y: sim_data.util[i][0] + sim_data.util[i][1],
+                y0: sim_data.util[i][0],
             });
         } else {
             util_human.push({
@@ -540,6 +540,7 @@ function drawCarStuff(car) {
                             path: Maps.SymbolPath.CIRCLE,
                             scale: 8,
                             strokeColor: '#008080', // TODO color
+                            strokeOpacity: 0.5,
                         },
                       });
                     car.curTaskRender.setMap(null);

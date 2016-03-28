@@ -339,7 +339,6 @@ function drawEmissionChart(emissions) {
 
         stack = d3.layout.stack(),
         layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); }));
-drawUtil(layers);
     
 function drawUtil(layers) {
     
