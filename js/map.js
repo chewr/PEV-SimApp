@@ -312,6 +312,43 @@ function initHeatmaps() {
     });
 }
 
+function drawUtilization() {
+    
+}
+
+function zipUtilization() {
+    // zip layers into len-24 arrays of format
+    // [(index, y-value, y-min), ... ]
+    util_human = [];
+    util_parc = [];
+    for (var i = 0; i < 24; i++) {
+        if (i < sim_data.util.length) {
+            util_human.push({
+                x: i,
+                y: sim_data.util[i][0],
+                y0: 0,
+            });
+            util_parc.push({
+                x: i,
+                y: sim_data.util[i][1],
+                y0: 0,
+            });
+        } else {
+            util_human.push({
+                x: i,
+                y: 0,
+                y0: 0,
+            });
+            util_parc.push({
+                x: i,
+                y: 0,
+                y0: 0,
+            });
+        }
+    }
+    return [util_human, util_parc];
+}
+
 function animateCars() {
     // like animateLines but for cars with a schedule of many things to do    
 
@@ -332,6 +369,8 @@ function animateCars() {
     intervals.push(interval);
     
     initHeatmaps();
+    
+    drawUtilization();
     
     var interval;
     
@@ -417,21 +456,6 @@ function animateCars() {
                 }
                 
             }
-            
-//            while (sim_data.tstep >= sim_data.trips[sim_data.oldTask].pickup) {
-//                sim_data.trips[sim_data.oldTask].marker.setMap(null);
-//                if (sim_data.trips[sim_data.oldTask].is_human) {
-//                    sim_passPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
-//                } else {
-//                    sim_parcPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
-//                }
-//                sim_data.trips[sim_data.oldTask].marker = null; // go ahead and garbage collect
-//
-//                sim_data.oldTask++;
-//                if (sim_data.oldTask >= sim_data.trips.length) {
-//                    break;
-//                }
-//            }
         }
         
     }, sim_framestep * sim_factor);
