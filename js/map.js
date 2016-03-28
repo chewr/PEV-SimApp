@@ -17,8 +17,8 @@ var dDist = 0;
 var taxiTime = 0;
 
 var sim_data;
-var sim_tstep = 8;
-var sim_framestep = 50;
+var sim_tstep = 4;
+var sim_framestep = 25;
 
 var sim_hm_passStart;
 var sim_hm_passEnd;
@@ -320,26 +320,35 @@ function animateCars() {
         window.clearInterval(intervals[n]);
     }
     
+    sim_data['tstep'] = 0;
+    
+    // Set up global time
+    interval = window.setInterval(function() {
+        if (!interval) {
+            return;
+        }
+        sim_data.tstep += sim_tstep;
+    }, sim_framestep);
+    intervals.push(interval);
+    
     initHeatmaps();
     
-    var tstep = 0;
     var interval;
     
-    var sim_factor = 12;
+    var sim_factor = 10;
     
     sim_data['curTask'] = 0;
-    sim_data['oldTask'] = 0;
+    sim_data['shown'] = [];
     
     interval = window.setInterval(function() {
         if (!interval) {
             return;
         }
         
-        tstep += sim_tstep * sim_factor;
         
         if (sim_data.curTask < sim_data.trips.length) {        
 
-            while (tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
+            while (sim_data.tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
                 // draw the caller
                 // xxx
                 var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
@@ -377,7 +386,9 @@ function animateCars() {
                 }
                 marker.info = {};
                 sim_data.trips[sim_data.curTask]['marker'] = marker;
-
+                
+                sim_data.shown.push(sim_data.curTask);
+                
                 sim_data.curTask++;
                 if (sim_data.curTask >= sim_data.trips.length) {
                     break;
@@ -385,22 +396,42 @@ function animateCars() {
             }
         }
         
-        if (sim_data.oldTask < sim_data.trips.length) {
+        if (sim_data.shown.length > 0) {
             // disappear old tasks that have completed
-            while (tstep >= sim_data.trips[sim_data.oldTask].pickup) {
-                sim_data.trips[sim_data.oldTask].marker.setMap(null);
-                if (sim_data.trips[sim_data.oldTask].is_human) {
-                    sim_passPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
-                } else {
-                    sim_parcPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
+            // TODO use a heap implementation for speed ?
+            for (var i = 0; i < sim_data.shown.length; i++) {
+                var tripIdx = sim_data.shown[i];
+                if (sim_data.trips[tripIdx].pickup <= sim_data.tstep) {
+                    // remove element
+                    sim_data.trips[tripIdx].marker.setMap(null);
+                    if (sim_data.trips[tripIdx].is_human) {
+                        sim_passPickups.push(sim_data.trips[tripIdx].marker.position);
+                    } else {
+                        sim_parcPickups.push(sim_data.trips[tripIdx].marker.position);
+                    }
+                    sim_data.trips[tripIdx].marker = null;
+                    
+                    // remove element at [i]
+                    sim_data.shown.splice(i, 1);
+                    i--; // I hate doing this 
                 }
-                sim_data.trips[sim_data.oldTask].marker = null; // go ahead and garbage collect
-
-                sim_data.oldTask++;
-                if (sim_data.oldTask >= sim_data.trips.length) {
-                    break;
-                }
+                
             }
+            
+//            while (sim_data.tstep >= sim_data.trips[sim_data.oldTask].pickup) {
+//                sim_data.trips[sim_data.oldTask].marker.setMap(null);
+//                if (sim_data.trips[sim_data.oldTask].is_human) {
+//                    sim_passPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
+//                } else {
+//                    sim_parcPickups.push(sim_data.trips[sim_data.oldTask].marker.position);
+//                }
+//                sim_data.trips[sim_data.oldTask].marker = null; // go ahead and garbage collect
+//
+//                sim_data.oldTask++;
+//                if (sim_data.oldTask >= sim_data.trips.length) {
+//                    break;
+//                }
+//            }
         }
         
     }, sim_framestep * sim_factor);
@@ -426,7 +457,6 @@ function drawCarStuff(car) {
       });
     car['curTaskRender'] = carMarker;
     
-    var tstep = 0; // time step
     var interval; // I guess I declare this to have a static reference?
 
     interval = window.setInterval(function() {
@@ -434,7 +464,6 @@ function drawCarStuff(car) {
            return;
        } 
         
-        tstep += sim_tstep; // how many real-time seconds each frame is
         var newTask = false;
         
         if (car.current >= car.history.length) {
@@ -443,7 +472,7 @@ function drawCarStuff(car) {
         
         // update the car to the tstep
         var ctask = car.history[car.current]
-        while (tstep >= ctask.end) {
+        while (sim_data.tstep >= ctask.end) {
             if (ctask.kind == "PASSENGER") {
                 // TODO Find good gaussian icon
                 var dest = new Maps.LatLng(ctask.dest[0], ctask.dest[1]);
@@ -503,7 +532,7 @@ function drawCarStuff(car) {
                     car.curTaskRender = polyline;
                 } else {
                     var icons = car.curTaskRender.get('icons');
-                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    icons[0].offset = ( ((sim_data.tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
                     car.curTaskRender.set('icons', icons);
                 }
                 car.curTaskRender.setMap(map);
@@ -520,7 +549,7 @@ function drawCarStuff(car) {
 
                 } else {
                     var icons = car.curTaskRender.get('icons');
-                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    icons[0].offset = ( ((sim_data.tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
                     car.curTaskRender.set('icons', icons);
                 }
                 car.curTaskRender.setMap(map);
@@ -536,7 +565,7 @@ function drawCarStuff(car) {
 
                 } else {
                     var icons = car.curTaskRender.get('icons');
-                    icons[0].offset = ( ((tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
+                    icons[0].offset = ( ((sim_data.tstep - ctask.start) / (ctask.route.duration)) * 100 ) + '%'; // google maps api stuff here
                     car.curTaskRender.set('icons', icons);
                 }
                 car.curTaskRender.setMap(map);
@@ -552,7 +581,7 @@ function drawCarStuff(car) {
         //      color := loiter color (de-sat green)?
         
         
-    }, sim_framestep);
+    }, sim_framestep * 2);
     intervals.push(interval);
 }
 
