@@ -313,14 +313,15 @@ function initHeatmaps() {
 }
 
 function drawUtilization() {
-    
+    var layers = zipUtilization();
+    drawUtil(layers);
 }
 
 function zipUtilization() {
     // zip layers into len-24 arrays of format
     // [(index, y-value, y-min), ... ]
-    util_human = [];
-    util_parc = [];
+    var util_human = [];
+    var util_parc = [];
     for (var i = 0; i < 24; i++) {
         if (i < sim_data.util.length) {
             util_human.push({

@@ -331,16 +331,20 @@ function drawEmissionChart(emissions) {
 <!-- Utilization Chart -->
 
 <script>
-var n = 2, // number of layers
-    m = 24, // number of samples per layer
+    var n = 2, // number of layers
+        m = 24, // number of samples per layer
 
-    parcel_color = "#FF9900", 
-    passenger_color = "#FFFF00",
+        parcel_color = "#FF9900", 
+        passenger_color = "#FFFF00",
 
-    stack = d3.layout.stack(),
-    layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); })),
-    yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
-    yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
+        stack = d3.layout.stack(),
+        layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); }));
+drawUtil(layers);
+    
+function drawUtil(layers) {
+    
+    var yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
+        yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
     console.log(layers);
     
 
@@ -366,8 +370,11 @@ var n = 2, // number of layers
     .tickSize(0)
     .tickPadding(6)
     .orient("bottom");
+    
+    d3.select("#util_data").remove();
 
     var svg = d3.select($("#utilization_chart")[0]).append("svg")
+    .attr("id", "util_data")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -404,7 +411,7 @@ var n = 2, // number of layers
     var timeout = setTimeout(function() {
       d3.select("input[value=\"grouped\"]").property("checked", true).each(change);
     }, 2000);
-
+    
     function change() {
       clearTimeout(timeout);
       if (this.value === "stacked") transitionGrouped();
@@ -437,6 +444,9 @@ var n = 2, // number of layers
       .attr("width", x.rangeBand());
     }
 
+}
+
+    
 // Inspired by Lee Byron's test data generator.
 function bumpLayer(n, o) {
 
