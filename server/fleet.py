@@ -71,7 +71,11 @@ class Vehicle:
 	def assign(self, task, time):
 		if self.history[-1].kind == "IDLE":
 			self.history[-1].end = time
-		self.history.append(create_dispatch(self.soonestFreeAfter(time), self.history[-1].dest, task.getPickupLoc()))
+		try:
+			nav_dispatch = create_dispatch(self.soonestFreeAfter(time), self.history[-1].dest, task.getPickupLoc())
+		except Exception as e:
+			raise(e)
+		self.history.append(nav_dispatch)
 
 		wait_time = self.soonestFreeAfter(time) - task.getTimeOrdered()
 		self.history.append(dispatch_from_task(task, self.soonestFreeAfter(time)))
@@ -183,8 +187,11 @@ class Fleet:
 		t = trip.getTimeOrdered()
 		for v in self.vehicles:
 			v.update(t)
-		(vid, wait) = fsched.assign(t, trip, self)
-		print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
+		try:
+			(vid, wait) = fsched.assign(t, trip, self)
+			print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
+		except:
+			print "Unable to assign task " + + str(trip.getID()) + " to any vehicle"
 
 	def finishUp(self):
 		end = 0

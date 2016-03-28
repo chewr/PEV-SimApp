@@ -30,7 +30,7 @@ class Pickup:
 		self.route = routes.finder.get_dirs(self.start_loc, self.dest_loc)
 		if self.route is None:
 			raise Exception("could not find route")
-		self.duration = self.route.getDuration()
+		# self.duration = self.route.getDuration()
 
 	def getTimeOrdered(self):
 		return self.time_ordered
@@ -39,7 +39,7 @@ class Pickup:
 		return self.start_loc
 
 	def getDuration(self):
-		return self.duration
+		return self.route.getDuration()
 
 	def getType(self):
 		if self.is_human:
