@@ -270,6 +270,10 @@ function initHeatmaps() {
         map: map,
         radius: 30,
         opacity: .2,
+        gradient: [
+            'rgba(255, 0, 0, 0)',
+            'rgba(255, 255, 0, 1)',
+        ]
     });
     
     // TODO adjust radius and zoom
@@ -279,16 +283,32 @@ function initHeatmaps() {
         map: map,
         radius: 30,
         opacity: .2,
+        gradient: [
+            'rgba(255, 0, 0, 0)',
+            'rgba(255, 200, 0, 1)',
+        ]
     });
     
     sim_hm_parcStart = new Maps.visualization.HeatmapLayer({
         data: sim_parcPickups,
         map: map,
+        radius: 30,
+        opacity: .2,
+        gradient: [
+            'rgba(255, 0, 0, 0)',
+            'rgba(255, 150, 64, 1)',
+        ]
     });
     
     sim_hm_parcEnd = new Maps.visualization.HeatmapLayer({
         data: sim_parcDropoffs,
         map: map,
+        radius: 30,
+        opacity: .2,
+        gradient: [
+            'rgba(255, 0, 0, 0)',
+            'rgba(200, 128, 64, 1)',
+        ],
     });
 }
 
@@ -323,20 +343,38 @@ function animateCars() {
                 // draw the caller
                 // xxx
                 var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
-                var marker = new Maps.Marker({
-                    position: origin,
-                    map: map,
-                    icon: {
-                        path: fontawesome.markers.CHILD,
-                        scale: 0.5,
-                        strokeWeight: 0.1,
-                        strokeColor: '#FFFF00',
-                        strokeOpacity: 1,
-                        fillColor: '#FFFF00',
-                        fillOpacity: 1
-                    },
-                    clickable: false,
-                });
+                var marker;
+                if (sim_data.trips[sim_data.curTask].is_human) {
+                    marker = new Maps.Marker({
+                        position: origin,
+                        map: map,
+                        icon: {
+                            path: fontawesome.markers.CHILD,
+                            scale: 0.5,
+                            strokeWeight: 0.1,
+                            strokeColor: '#FFFF00',
+                            strokeOpacity: 1,
+                            fillColor: '#FFFF00',
+                            fillOpacity: 1
+                        },
+                        clickable: false,
+                    });
+                } else {
+                    marker = new Maps.Marker({
+                        position: origin,
+                        map: map,
+                        icon: {
+                            path: fontawesome.markers.CUBE,
+                            scale: 0.5,
+                            strokeWeight: 0.1,
+                            strokeColor: '#FF8000',
+                            strokeOpacity: 1,
+                            fillColor: '#FF8000',
+                            fillOpacity: 1
+                        },
+                        clickable: false,
+                    });
+                }
                 marker.info = {};
                 sim_data.trips[sim_data.curTask]['marker'] = marker;
 
@@ -412,7 +450,8 @@ function drawCarStuff(car) {
                 sim_passDropoffs.push(dest);
             }
             else if (ctask.kind == "PARCEL") {
-                // TODO set dropoff icon at ctask.dest
+                var dest = new Maps.LatLng(ctask.dest[0], ctask.dest[1]);
+                sim_parcDropoffs.push(dest);
             }
             car.current++;
             newTask = true;

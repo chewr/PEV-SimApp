@@ -121,7 +121,7 @@ def assembleTripSim(hMaxDist, hFreq, pMaxDist, pFreq, start, end):
 		pickups.append(trip.Pickup(ids, h[0], h[1].start, h[1].dest, True, route=h[1].route))
 		ids += 1
 	for p in parcels:
-		pickups.append(trip.Pickup(ids, p[0], p[1].start, p[1].dest, True, route=p[1].route))
+		pickups.append(trip.Pickup(ids, p[0], p[1].start, p[1].dest, False, route=p[1].route))
 		ids += 1
 	pickups.sort(key=lambda x: x.getTimeOrdered())
 	return pickups
