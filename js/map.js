@@ -379,11 +379,23 @@ function animateCars() {
     
     sim_data['curTask'] = 0;
     sim_data['shown'] = [];
+    sim_data['curHour'] = 0;
     
     interval = window.setInterval(function() {
         if (!interval) {
             return;
         }
+        
+        // TODO fuck it we'll just redraw the whole thing for now
+        if (sim_data.curHour < sim_data.tstep / 3600) {
+            // New hour
+            sim_data.curHour++;
+            if (sim_data.curHour < sim_data.emissions.length) {
+            emissions[0] = sim_data.emissions[sim_data.curHour];
+            drawEmissionChart(emissions);
+            }
+        }
+        
         
         
         if (sim_data.curTask < sim_data.trips.length) {        

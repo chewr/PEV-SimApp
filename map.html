@@ -157,14 +157,14 @@
   // jQuery(function($) {
       
 function drawEmissionChart(emissions) {
-      var names = ['PEV', 'Taxi','Robot Uber'],
+    var names = ['PEV', 'Taxi','Robot Uber'],
 
 
-    // emissions = [2, 10, 5],
-    chart,
-    width = 250,
-    bar_height = 20,
-    height = bar_height * names.length;
+        // emissions = [2, 10, 5],
+        chart,
+        width = 250,
+        bar_height = 20,
+        height = bar_height * names.length;
 
     /* step 1 */
     chart = d3.select($("#step-1")[0])
@@ -264,6 +264,7 @@ function drawEmissionChart(emissions) {
     
     d3.select("#emissions_data").remove();
 
+    // TODO
     chart = d3.select($("#emission_chart")[0])
     .append('svg').attr("id", "emissions_data")
     .attr('class', 'chart')
