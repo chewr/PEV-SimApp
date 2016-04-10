@@ -21,6 +21,7 @@ class RouteFinder:
 				self.cache = pickle.load(c)
 		except IOError:
 			self.cache = {}
+		self.cache_file = cache_file
 
 	def get_dirs(self, origin, dest):
 		## TODO dynamic programming + graph algos for more cache hits?
@@ -43,8 +44,8 @@ class RouteFinder:
 				return None
 		return self.cache[(origin,dest)]
 
-	def save_cache(self, cache_file):
-		pickle.dump(self.cache, open(cache_file, "wb"))
+	def save_cache(self):
+		pickle.dump(self.cache, open(self.cache_file, "wb"))
 
 class Route:
 	## TODO make more space efficient
@@ -90,4 +91,4 @@ finder = RouteFinder("google_api_key", ".routes_cache")
 @atexit.register
 def goodbye():
 	print "exiting..."
-	finder.save_cache(".routes_cache")
+	finder.save_cache()
