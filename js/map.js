@@ -34,9 +34,27 @@ var sim_parcPickups = new Maps.MVCArray([]);
 var allLines = {};
 var mode = {};
 
-var emissions = [2, 10, 5];
+var emissions = [0, 0, 0];
 var tot_distances = [0, 0, 0];
 var emissions_coeffs = [2, 10, 5];
+var person_wait_times = [ 
+    { key: 0, value: 0 },
+    { key: 5, value: 0 },
+    { key: 10, value: 0 },
+    { key: 15, value: 0 },
+    { key: 20, value: 0 },
+    { key: 25, value: 0 },
+    { key: 30, value: 0 },
+    { key: 35, value: 0 }];
+var package_wait_times = [ 
+    { key: 0, value: 0 },
+    { key: 5, value: 0 },
+    { key: 10, value: 0 },
+    { key: 15, value: 0 },
+    { key: 20, value: 0 },
+    { key: 25, value: 0 },
+    { key: 30, value: 0 },
+    { key: 35, value: 0 }];
 
 
 var c_taxi_time=0;
@@ -350,6 +368,21 @@ function zipUtilization() {
     return [util_human, util_parc];
 }
 
+function calculateTripWaitTime(data) {
+    // TODO: don't count actual trips as wait time
+    // rounding to nearest multiple of 5
+    var wait_time = Math.round(data.route.duration/60/5); 
+    if (wait_time > 7) wait_time = 7;
+    if (data.is_human) {
+        person_wait_times[wait_time].value += 1;
+    } else {
+        package_wait_times[wait_time].value += 1;
+    }
+    drawPersonWaitTime(person_wait_times);
+    drawPackageWaitTime(package_wait_times);
+}
+
+
 function animateCars() {
     // like animateLines but for cars with a schedule of many things to do    
 
@@ -357,6 +390,8 @@ function animateCars() {
     for (var i = 0; i < intervals.length; i++) {
         window.clearInterval(intervals[n]);
     }
+
+    drawUtilization();
     
     sim_data['tstep'] = 0;
     
@@ -403,6 +438,11 @@ function animateCars() {
             while (sim_data.tstep >= sim_data.trips[sim_data.curTask].time_ordered) {
                 // draw the caller
                 // xxx
+                // console.log(sim_data.trips[sim_data.curTask])
+                // drawUtilization();
+                calculateTripEmission(sim_data.trips[sim_data.curTask], true);
+                drawEmissionChart(emissions);
+                calculateTripWaitTime(sim_data.trips[sim_data.curTask]);
                 var origin = {lat: sim_data.trips[sim_data.curTask].start_loc[0], lng: sim_data.trips[sim_data.curTask].start_loc[1]};
                 var marker;
                 if (sim_data.trips[sim_data.curTask].is_human) {
@@ -664,7 +704,6 @@ function animateLines() {
     for (var n = 0; n < intervals.length; n++) {
         window.clearInterval(intervals[n]);
     }
-
     var finished = 0;
 
     lines.forEach(function(line) {
@@ -869,7 +908,7 @@ function calculateEmissions(paths) {
     for (var i = 0; i < emissions.length; i++) {
         emissions[i] = tot_distances[i] * emissions_coeffs[i] / 10000
     }
-  //  normalize_emissions()
+  //normalize_emissions()
 }
 
 function normalize_emissions() {
@@ -881,11 +920,24 @@ function normalize_emissions() {
     }
 }
 
+function calculateTripEmission(trip, isCar) {
+    if (isCar) {
+        tot_distances[1] = trip.route.distance;
+        tot_distances[2] = trip.route.distance;
+    // } else {
+        tot_distances[0] = trip.route.distance;
+    }  
+    
+    for (var i = 0; i < emissions.length; i++) {
+        emissions[i] += tot_distances[i] * emissions_coeffs[i] / 10000;
+    }
+  //normalize_emissions()
+}
+
 function tripChanged(trip) {
     if (!trip) {
         return
     }
-    
     taxi(trip);
 
     var res = [];
@@ -901,6 +953,8 @@ function tripChanged(trip) {
                 drawPaths(res, origin, trip.id);
                 alert('breakpt');
                 animateLines();
+                drawEmissionChart(emissions);
+                drawUtilization();
             }
         }
     };
@@ -918,7 +972,7 @@ function tripChanged(trip) {
             travelMode:  Maps.TravelMode.BICYCLING,
         }, dirfunc);
     }
-    drawEmissionChart(emissions);
+    
 }
 
 
