@@ -27,7 +27,7 @@ class Pickup:
 		return sim_util.ll_dist_m(self.start_loc, self.dest_loc) / 4.47 
 		
 	def routefind(self):
-		self.route = routes.finder.get_dirs(self.start_loc, self.dest_loc)
+		self.route = routes.RouteFinder("google_api_key", ".routes_cache").get_dirs(self.start_loc, self.dest_loc)
 		if self.route is None:
 			raise Exception("could not find route")
 		# self.duration = self.route.getDuration()
