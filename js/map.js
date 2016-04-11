@@ -195,6 +195,23 @@ function fleet_sim() {
     }, 'json');
 }
 
+function test_fleet_sim() {
+    var fleet_size = $('#fleetSize').val();
+    var maxDist = $('#maxTripDist').val();
+    var parcelFreq = $('#parcelAmount').val();
+    var sim_params = {
+        size: fleet_size,
+        maxDist: maxDist,
+        parcels: parcelFreq,
+    };
+    console.log(sim_params);
+    $.post( '/server/sim2.json', JSON.stringify(sim_params), function( data ) {
+        console.log(data);
+        sim_data = data;
+        animateCars();
+    }, 'json');
+}
+
 function taxi(trip) {
     var start   = new Date(trip.start.time);
     var end     = new Date(trip.end.time);
