@@ -26,3 +26,8 @@ Here's how:
   and you'll want to put it in a file called 
 
     google_api_key
+
+- from the repo top level folder, run gen_locs.py to scrape
+  a bunch of trip start and end points from the taxi data
+  so we can run good simulations. The variation of the trips
+  will get better as you run more simulations

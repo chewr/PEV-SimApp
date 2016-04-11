@@ -33,6 +33,8 @@ class TripRandomizer:
 		try:
 			with open(TripRandomizer.instance.locs_file, 'r') as f:
 				TripRandomizer.instance.locs = pickle.load(f)
+		except IOError:
+			print "Could not open file " + locs_file
 		except Exception as e:
 			raise(e)
 
@@ -42,6 +44,8 @@ class TripRandomizer:
 		try:
 			with open(TripRandomizer.instance.rides_file, 'r') as f:
 				TripRandomizer.instance.trips = pickle.load(f)
+		except IOError:
+			print "Could not open file " + rides_file
 		except Exception as e:
 			raise(e)
 
@@ -49,7 +53,7 @@ class TripRandomizer:
 		if TripRandomizer.instance.rides_file:
 			pickle.dump(TripRandomizer.instance.trips, open(TripRandomizer.instance.rides_file, 'wb'))
 
-	def locsFromFile(self, loc_csv):
+	def loadCSVLocs(self, loc_csv):
 		with open(loc_csv, 'r') as c:
 			reader = csv.reader(c)
 			for row in reader:
@@ -63,7 +67,7 @@ class TripRandomizer:
 	def getTripLocation(self, maxDist):
 		random.seed()
 		if maxDist is None or maxDist <= 0:
-			return random.sample(locs, 2)
+			return random.sample(TripRandomizer.instance.locs, 2)
 		scaleFactor = 4
 		pulledPoints = random.sample(TripRandomizer.instance.locs, scaleFactor)
 	
@@ -84,6 +88,11 @@ class TripRandomizer:
 		print "Generating from " + str(len(TripRandomizer.instance. trips)) + " source trips"
 		tripTimes = getRandomTripTimes(frequency, start, end)
 		print "generating trips for " + str(len(tripTimes)) + " times"
+
+		if len(TripRandomizer.instance.trips) < len(tripTimes):
+			## if we don't have enough trips, randomly generate a few more
+			self.genRides(maxDist + maxDist / 2, len(tripTimes))
+
 	        idx = 0
 		for t in TripRandomizer.instance.trips:
 			idx += 1
@@ -111,6 +120,21 @@ class TripRandomizer:
 		pickups.sort(key=lambda x: x.getTimeOrdered())
 		return pickups
 
+	def genRides(self, maxDist, total):
+		f = routes.RouteFinder()
+		tn = total / (maxDist / 800)
+		
+		for rideDist in xrange(0, maxDist, 800):
+			for i in xrange(tn):
+				(start, dest) = self.getTripLocation(rideDist)
+				rte = f.get_dirs(start, dest)
+				if rte is not None:
+					TripRandomizer.instance.trips.append(Ride(start, dest, sim_util.ll_dist_m(start, dest), rte))
+		
+		TripRandomizer.instance.trips.sort(key=lambda x: x.dist)
+		
+		self.saveRidesFile()
+
 
 class Ride:
 	def __init__(self, start, dest, dist, route):
@@ -134,29 +158,6 @@ def getRandomTripTimes(frequency, start, end):
 	return out
 
 
-## def genRides(maxDist, total):
-## 	f = routes.finder
-## 	trips = []
-## 	ridesFile = '.rides_def'
-## 	try:
-## 		with open(ridesFile, 'rb') as c:
-## 			trips = pickle.load(c)
-## 	except:
-## 		trips = []
-## 
-## 	tn = total / (maxDist / 800)
-## 	
-## 	for rideDist in xrange(0, maxDist, 800):
-## 		for i in xrange(tn):
-## 			(start, dest) = getTripLocation(rideDist)
-## 			rte = f.get_dirs(start, dest)
-## 			if rte is not None:
-## 				trips.append(Ride(start, dest, sim_util.ll_dist_m(start, dest), rte))
-## 	
-## 	trips.sort(key=lambda x: x.dist)
-## 	
-## 	pickle.dump(trips, open(ridesFile, 'wb'))
-		
 	
 
 
