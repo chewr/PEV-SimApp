@@ -14,7 +14,7 @@ class TripRandomizer:
 			self.locs = Set([])
 			self.locs_file = None
 			self.trips = []
-		self.rides_file = None
+			self.rides_file = None
 
 	instance = None
 	def __init__(self):
@@ -23,18 +23,18 @@ class TripRandomizer:
 		else:
 			TripRandomizer.instance = TripRandomizer.__Singleton()
 
+	def saveLocsFile(self):
+		if TripRandomizer.instance.locs_file:
+			pickle.dump(TripRandomizer.instance.locs, open(TripRandomizer.instance.locs_file, 'wb'))
+
 	def loadLocsFile(self, locs_file):
 		self.saveLocsFile()
 		TripRandomizer.instance.locs_file = locs_file
 		try:
 			with open(TripRandomizer.instance.locs_file, 'r') as f:
 				TripRandomizer.instance.locs = pickle.load(f)
-		except e as exception:
+		except Exception as e:
 			raise(e)
-
-	def saveLocsfile(self):
-		if TripRandomizer.instance.locs_file:
-			pickle.dump(TripRandomizer.instance.locs, open(TripRandomizer.instance.locs_file, 'wb'))
 
 	def loadRidesFile(self, rides_file):
 		self.saveRidesFile()
@@ -42,7 +42,7 @@ class TripRandomizer:
 		try:
 			with open(TripRandomizer.instance.rides_file, 'r') as f:
 				TripRandomizer.instance.trips = pickle.load(f)
-		except e as Exception:
+		except Exception as e:
 			raise(e)
 
 	def saveRidesFile(self):
