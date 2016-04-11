@@ -31,7 +31,7 @@ class Dispatch:
 		return self.route_distance
 
 def create_dispatch(time, start, dest):
-	rte = routes.finder.get_dirs(start, dest)
+	rte = routes.RouteFinder().get_dirs(start, dest)
 	if rte is None:
 		raise Exception("Could not find route!")
 	dur = rte.getDuration()
@@ -74,6 +74,7 @@ class Vehicle:
 		try:
 			nav_dispatch = create_dispatch(self.soonestFreeAfter(time), self.history[-1].dest, task.getPickupLoc())
 		except Exception as e:
+			print "Encountered exception " + str(e)
 			raise(e)
 		self.history.append(nav_dispatch)
 
