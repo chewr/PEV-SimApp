@@ -10,6 +10,7 @@ import SimpleHTTPServer
 import SocketServer
 import logging
 import json
+import server
 
 import sys
 
@@ -44,9 +45,15 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		print fleet_size
 		print maxDist
 		print parcFreq
+		response = server.run_sim.Run(fleet_size, maxDist, parcFreq, 0, 28800)
+		self.wfile.write(response)
 	else:
         	SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
+# initialize simulation stuff
+server.routes.RouteFinder("google_api_key", ".routes_cache")
+server.dynamic_trips.TripRandomizer().loadLocsFile(".loc_file")
+server.dynamic_trips.TripRandomizer().loadRidesFile(".rides_def")
 Handler = ServerHandler
 
 httpd = SocketServer.TCPServer(("", PORT), Handler)

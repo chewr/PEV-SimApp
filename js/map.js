@@ -188,7 +188,7 @@ function fleet_sim() {
         parcels: parcelFreq,
     };
     console.log(sim_params);
-    $.post( 'server/sim2.json', JSON.stringify(sim_params), function( data ) {
+    $.post( '/fleetsim', JSON.stringify(sim_params), function( data ) {
         console.log(data);
         sim_data = data;
         animateCars();
