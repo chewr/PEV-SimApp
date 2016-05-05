@@ -23,3 +23,4 @@ env.schedule(None, testdata)
 pp = pprint.PrettyPrinter(indent=4)
 ## pp.pprint(env.fleet.vehicles)
 print json.dumps(env, default=sim_util.default_json, separators=(',', ':'), indent=4)
+print len(testdata), "trips generated"

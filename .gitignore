@@ -1,2 +1,4 @@
 server/google_api_key
+*.pkl
 *.pyc
+*.db

@@ -5,6 +5,7 @@ import googlemaps
 import cPickle as pickle
 import atexit
 import sys
+import route_cache
 
 class RouteFinder:
 	class __RF:
@@ -17,17 +18,12 @@ class RouteFinder:
 				print "It looks like you need a google api key"
 				sys.exit(1)
 			self.client = googlemaps.Client(key=api_key)
-			try:
-	        		with open(cache_file, "rb") as c:
-					self.cache = pickle.load(c)
-			except IOError:
-				self.cache = {}
-			self.cache_file = cache_file
+			self.cache = route_cache.RouteCache(cache_file)
 	
 		def get_dirs(self, origin, dest):
 			## TODO dynamic programming + graph algos for more cache hits?
 			## TODO do we need to do multiple modes? (bicycling vs driving)?
-			if (origin, dest) not in self.cache:
+			if not self.cache.hasRoute(origin, dest):
 				route = None
 				try:
 					route = self.client.directions(origin, dest, mode="bicycling")
@@ -39,14 +35,14 @@ class RouteFinder:
 					print "Encountered Exception: " + str(type(e)) + str(e.args)
 					return None
 				if route:
-					self.cache[(origin, dest)] = Route(route)
+					self.cache.setRoute(origin, dest, Route(route))
 				else:
 					print "Couldn't find route from " + str(origin) + " to " + str(dest)
 					return None
-			return self.cache[(origin,dest)]
+			return self.cache.getRoute(origin, dest)
 	
 		def save_cache(self):
-			pickle.dump(self.cache, open(self.cache_file, "wb"))
+			self.cache.save()
 	instance = None
 	def __init__(self, keyfile=None, cache_file=None):
 		if not RouteFinder.instance:
@@ -102,4 +98,5 @@ class Route:
 @atexit.register
 def goodbye():
 	print "exiting..."
-	RouteFinder.instance.save_cache()
+	if RouteFinder.instance:
+		RouteFinder.instance.save_cache()
