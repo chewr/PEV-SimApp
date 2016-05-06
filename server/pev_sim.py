@@ -2,6 +2,8 @@
 ## a set of pickup/dropoff tasks
 
 import fleet as pev
+import os
+import hashlib
 
 class Sim_env:
 	def __init__(self, fleet_size, bounds, start_loc):
@@ -17,17 +19,24 @@ class Sim_env:
 		self.wait_times = []
 
 		self.trips = []
+	
+		self.sim_uid = str(hashlib.sha224(os.urandom(160)).hexdigest())
 
 	def schedule(self, start_time, trips):
+		print "Assigning tasks..."
 		## trips is a sorted list of Trip objects,
 		## sorted by pickup time
 		for t in trips:
 			self.fleet.assign_task(t)
+		print "Assigned!"
 		self.fleet.finishUp()
+		print "Closed simulation!"
 
 		self.trips.extend(trips);
 		self.util = self.fleet.getUtilization()
 		self.emissions = self.fleet.getEmissions()
+
+		print "extended data and logs!"
 
 		## TODO update sim_end
 		## TODO time series statistics
