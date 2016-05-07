@@ -5,4 +5,6 @@ if [ -s .running.pid ]; then
 else
 	nohup python sim_serv.py &
 	echo $! > .running.pid
+	nohup mongod --dbpath $(pwd)/db &
+	echo $! >> .running.pid
 fi

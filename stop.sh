@@ -4,10 +4,11 @@ if [ -s .running.pid ]; then
 	echo "stopping simulation server..."
 	while read -r line
 	do
-		name="$line"
-		echo "Killing $name"
-		kill $name
+		pid_to_kill="$line"
+		echo "Killing $pid_to_kil"
+		kill $pid_to_kill
 	done < ".running.pid"
+	## mv .running.pid pid_log.log
 	rm .running.pid
 	echo "done"
 else
