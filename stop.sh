@@ -5,7 +5,7 @@ if [ -s .running.pid ]; then
 	while read -r line
 	do
 		pid_to_kill="$line"
-		echo "Killing $pid_to_kil"
+		echo "Killing $pid_to_kill"
 		kill $pid_to_kill
 	done < ".running.pid"
 	## mv .running.pid pid_log.log
