@@ -9,7 +9,7 @@ import routes
 
 import json
 
-routes.RouteFinder("google_api_key", ".routes_cache")
+routes.RouteFinder("google_api_key", "route_cache")
 
 env = pev_sim.Sim_env(3, None, (42.3492699,-71.0900377))
 

@@ -1,30 +1,24 @@
-import shelve
-import cPickle as pickle
+from pymongo import MongoClient, GEO2D
 
 class RouteCache:
 	
-	def __init__(self, filename):
-		self.shelf = shelve.open(filename)
+	def __init__(self, dbname):
+		self.client = MongoClient()
+		self.db = self.client[dbname]
+		self.places = self.db.places
 
 	def hasRoute(self, ori, dst):
-		strkey = getKeyString((ori, dst))
-		return self.shelf.has_key(strkey)
+		return (not (self.places.find_one({"ends": [ori,dst]}) is None))
 
 	def getRoute(self, ori, dst):
-		strkey = getKeyString((ori, dst))
-		return self.shelf[strkey]
+		found = self.places.find_one({"ends": [ori, dst]})
+		return found["route"]
 
 	def setRoute(self, ori, dst, rte):
-		strkey = getKeyString((ori, dst))
-		self.shelf[strkey] = rte
+		self.places.insert({"ends":[ori, dst], "route": rte})
 
 	def save(self):
-		self.shelf.sync()
+		pass
 
 	def close(self):
-		self.shelf.close()
-
-def getKeyString(a):
-	out = pickle.dumps(a)
-	assert(pickle.loads(out) == a)
-	return out
+		pass

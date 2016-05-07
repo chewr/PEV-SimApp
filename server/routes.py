@@ -35,11 +35,11 @@ class RouteFinder:
 					print "Encountered Exception: " + str(type(e)) + str(e.args)
 					return None
 				if route:
-					self.cache.setRoute(origin, dest, Route(route))
+					self.cache.setRoute(origin, dest, route)
 				else:
 					print "Couldn't find route from " + str(origin) + " to " + str(dest)
 					return None
-			return self.cache.getRoute(origin, dest)
+			return Route(self.cache.getRoute(origin, dest))
 	
 		def save_cache(self):
 			self.cache.save()

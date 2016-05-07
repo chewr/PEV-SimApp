@@ -51,7 +51,7 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         	SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 # initialize simulation stuff
-server.routes.RouteFinder("google_api_key", "route_shelf")
+server.routes.RouteFinder("google_api_key", "route_cache")
 server.dynamic_trips.TripRandomizer().loadLocsFile(".loc_file")
 server.dynamic_trips.TripRandomizer().loadRidesFile(".rides_def")
 Handler = ServerHandler
