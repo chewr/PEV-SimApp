@@ -51,6 +51,10 @@ for i in xrange(3):
 		if not h_i.end == h_a.end:
 			print "fail"
 
+env_inc.setFleetSize(2)
+env_inc.setFleetSize(10)
+env_inc.setFleetSize(1)
+env_inc.setFleetSize(11)
 pp = pprint.PrettyPrinter(indent=4)
 ## pp.pprint(env.fleet.vehicles)
 print json.dumps(env_all.getSegment(0, 86400), default=sim_util.default_json, separators=(',', ':'), indent=4)

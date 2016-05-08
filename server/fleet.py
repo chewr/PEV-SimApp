@@ -53,8 +53,14 @@ class Vehicle:
 
 		self.history = [idle_dispatch(0, loc)]
 		self.current = 0
+		self.enabled = True
 
 		## TODO representation here
+	def enable(self):
+		self.enabled = True
+
+	def disable(self):
+		self.enabled = False
 
 	def update(self, time):
 		## The purpose of this method is to set the current loc (in case we use it in the future)
@@ -177,8 +183,9 @@ class Vehicle:
 class Fleet:
 	def __init__(self, fleet_size, bounds, start_loc):
 		self.vehicles = []
-		start_loc = start_loc
-		for i in xrange(fleet_size):
+		self.start_loc = start_loc
+		self.fleet_size = fleet_size
+		for i in xrange(self.fleet_size):
 			self.vehicles.append(
 				Vehicle(i, True, start_loc))		
 
@@ -186,8 +193,8 @@ class Fleet:
 	def assign_task(self, trip):
 		## TODO args, return?
 		t = trip.getTimeOrdered()
-		for v in self.vehicles:
-			v.update(t)
+		for i in xrange(self.fleet_size):
+			self.vehicles[i].update(t)
 		try:
 			(vid, wait) = fsched.assign(t, trip, self)
 			print "task " + str(trip.getID()) + " assigned to vehicle " + str(vid) + " with wait of " + str(wait)
@@ -198,10 +205,10 @@ class Fleet:
 	## TODO deprecate
 	def finishUp(self):
 		end = 0
-		for v in self.vehicles:
-			end = max(end, v.lastScheduledTime())
-		for v in self.vehicles:
-			v.finish(end)
+		for i in xrange(self.fleet_size):
+			end = max(end, self.vehicles[i].lastScheduledTime())
+		for i in xrange(self.fleet_size):
+			self.vehicles[i].finish(end)
 
 	def getSegment(self, start, end):
 		## TODO implement
@@ -212,8 +219,8 @@ class Fleet:
 		denom = float(len(self.vehicles))
 		utils = []
 		lenLongest = 0
-		for v in self.vehicles:
-			u = v.getUtilization(3600)
+		for i in xrange(self.fleet_size):
+			u = self.vehicles[i].getUtilization(3600)
 			lenLongest = max(len(u), lenLongest)
 			utils.append(u)
 		## flatten
@@ -234,8 +241,8 @@ class Fleet:
 	def getEmissions(self):
 		emissionsByVehicle = []
 		lenLongest = 0
-		for v in self.vehicles:
-			ebv = v.getEmissions(3600)
+		for i in xrange(self.fleet_size):
+			ebv = self.vehicles[i].getEmissions(3600)
 			lenLongest = max(len(ebv), lenLongest)
 			emissionsByVehicle.append(ebv)
 		out = []
@@ -251,8 +258,21 @@ class Fleet:
 			emissions = emissions * coeff
 			out.append(emissions)
 		return out
-		
-		
+			
+	def setFleetSize(self, size):
+		if size > self.fleet_size:
+			## add vehicles
+			for i in xrange(self.fleet_size, size):
+				## enable any disabled vehicles or add new ones
+				if i >= len(self.vehicles):
+					self.vehicles.append(Vehicle(i, True, self.start_loc))
+				else:
+					self.vehicles[i].enable()
+		elif size < self.fleet_size:
+			## disable vehicles
+			for i in xrange(size, self.fleet_size):
+				self.vehicles[i].disable()
+		self.fleet_size = size
 
 	def __getitem__(self, key):
 		return self.vehicles[key]

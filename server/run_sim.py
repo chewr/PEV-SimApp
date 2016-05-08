@@ -10,6 +10,7 @@ def Run(sim_uid, fleet, maxDist, freq, dur):
 	if sim_uid in environs:
 		env = environs[sim_uid]
 		start = env.sim_end
+		env.setFleetSize(fleet)
 	else:
 		env = pev_sim.Sim_env(fleet, None, (42.3602595,-71.0873766))
 	end = start + dur

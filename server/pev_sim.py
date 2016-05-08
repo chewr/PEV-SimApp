@@ -24,6 +24,11 @@ class Sim_env:
 	
 		self.sim_uid = str(hashlib.sha224(os.urandom(160)).hexdigest())
 
+	def setFleetSize(self, size):
+		self.fleet.setFleetSize(size)
+		self.fleet_size = size
+		
+
 	def getSegment(self, start, end):
 		sgmnt = Sim_env(self.fleet_size, self.bounds, self.start_loc)
 		sgmnt.fleet = self.fleet.getSegment(start, end)
@@ -42,7 +47,7 @@ class Sim_env:
 		for trip in self.trips:
 			if start <= trip.getTimeOrdered() and trip.getTimeOrdered() < end:
 				sgmnt.trips.append(trip)
-		return sgmnt	
+		return sgmnt
 
 	def scheduleIncremental(self, trips, dur):
 		self.sim_start = self.sim_end
