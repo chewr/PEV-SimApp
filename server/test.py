@@ -18,9 +18,9 @@ testdata = tripgen.readNewburyTestData()
 for t in testdata:
 	print " ".join(["Trip", str(t.getID()), "Time", str(t.getTimeOrdered()), "Pickup:", str(t.getPickupLoc()), "Dropoff", str(t.getDest())])
 
-env.schedule(None, testdata)
+env.schedule(testdata)
 
 pp = pprint.PrettyPrinter(indent=4)
 ## pp.pprint(env.fleet.vehicles)
-print json.dumps(env, default=sim_util.default_json, separators=(',', ':'), indent=4)
+print json.dumps(env.getSegment(0, 86400), default=sim_util.default_json, separators=(',', ':'), indent=4)
 print len(testdata), "trips generated"

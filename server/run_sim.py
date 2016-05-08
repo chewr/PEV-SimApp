@@ -14,5 +14,5 @@ def Run(sim_uid, fleet, maxDist, freq, dur):
 	else:
 		env = pev_sim.Sim_env(fleet, None, (42.3602595,-71.0873766))
 		environs[env.sim_uid] = env
-	env.schedule(None, pickups)
-	return json.dumps(env, default=sim_util.default_json, separators=(',', ':'), indent=4)
+	env.schedule(pickups)
+	return json.dumps(env.getSegment(start, end), default=sim_util.default_json, separators=(',', ':'), indent=4)

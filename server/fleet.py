@@ -194,12 +194,18 @@ class Fleet:
 		except:
 			print "Unable to assign task " + str(trip.getID()) + " to any vehicle"
 
+
+	## TODO deprecate
 	def finishUp(self):
 		end = 0
 		for v in self.vehicles:
 			end = max(end, v.lastScheduledTime())
 		for v in self.vehicles:
 			v.finish(end)
+
+	def getSegment(self, start, end):
+		## TODO implement
+		return self
 
 	## returns the utilization (Passengers/packages) at time t
 	def getUtilization(self):
