@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ## TODO the server that runs the simulation. Should receive
 ## requests from the front end, dispatch the simulation,
 ## and update the front end with visualization data
@@ -42,10 +41,11 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		(dist, units) = args["maxDist"].split()
 		maxDist = int(dist) * 1600
 		parcFreq = int(args["parcels"].split()[0])
+		sim_uid = args["sim_uid"]
 		print fleet_size
 		print maxDist
 		print parcFreq
-		response = server.run_sim.Run(fleet_size, maxDist, parcFreq, 0, 28800)
+		response = server.run_sim.Run(sim_uid, fleet_size, maxDist, parcFreq, 1800)
 		self.wfile.write(response)
 	else:
         	SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)

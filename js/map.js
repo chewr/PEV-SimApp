@@ -17,6 +17,7 @@ var dDist = 0;
 var taxiTime = 0;
 
 var sim_data;
+var sim_uid = "";
 var sim_tstep = 4;
 var sim_framestep = 25;
 
@@ -185,12 +186,14 @@ function fleet_sim() {
     var sim_params = {
         size: fleet_size,
         maxDist: maxDist,
-        parcels: parcelFreq,
+        parcels: parcelFreq,   
+        sim_uid: sim_uid,
     };
     console.log(sim_params);
     $.post( '/fleetsim', JSON.stringify(sim_params), function( data ) {
         console.log(data);
         sim_data = data;
+        sim_uid = sim_data['sim_uid'];
         animateCars();
     }, 'json');
 }
