@@ -10,7 +10,7 @@ def Run(sim_uid, fleet, maxDist, freq, dur):
 	end = start + dur
 	pickups = dynamic_trips.TripRandomizer().assembleTripSim(maxDist, freq, maxDist, freq, start, end)
 	if sim_uid in environs:
-		env = environs[sim_end]
+		env = environs[sim_uid]
 	else:
 		env = pev_sim.Sim_env(fleet, None, (42.3602595,-71.0873766))
 		environs[env.sim_uid] = env
