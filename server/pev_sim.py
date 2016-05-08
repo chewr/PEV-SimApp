@@ -44,7 +44,14 @@ class Sim_env:
 				sgmnt.trips.append(trip)
 		return sgmnt	
 
-	def schedule(self, trips):
+	def scheduleIncremental(self, trips, dur):
+		self.sim_start = self.sim_end
+		for t in trips:
+			self.fleet.assign_task(t)
+		self.sim_end = self.sim_start + dur
+		self.trips.extend(trips)
+
+	def scheduleAll(self, trips):
 		print "Assigning tasks..."
 		## trips is a sorted list of Trip objects,
 		## sorted by pickup time
