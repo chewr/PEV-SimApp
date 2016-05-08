@@ -20,6 +20,8 @@ var sim_data;
 var sim_uid = "";
 var sim_tstep = 4;
 var sim_framestep = 25;
+var sim_queryonce = true;
+var sim_ongoing = true;
 
 var sim_hm_passStart;
 var sim_hm_passEnd;
@@ -188,11 +190,14 @@ function fleet_sim() {
         maxDist: maxDist,
         parcels: parcelFreq,   
         sim_uid: sim_uid,
+        sim_start: 0,
+        sim_dur: 1800,
     };
     console.log(sim_params);
     $.post( '/fleetsim', JSON.stringify(sim_params), function( data ) {
         console.log(data);
         sim_data = data;
+        sim_queryonce = true;
         sim_uid = sim_data['sim_uid'];
         animateCars();
     }, 'json');
@@ -370,6 +375,12 @@ function zipUtilization() {
     return [util_human, util_parc];
 }
 
+function installSimData(data) {
+    if (data.sim_uid == sim_uid) {
+        
+    }
+}
+
 function animateCars() {
     // like animateLines but for cars with a schedule of many things to do    
 
@@ -386,6 +397,27 @@ function animateCars() {
             return;
         }
         sim_data.tstep += sim_tstep;
+        if (sim_ongoing && sim_queryonce) {
+            sim_queryonce = false
+            var fleet_size = $('#fleetSize').val();
+            var maxDist = $('#maxTripDist').val();
+            var parcelFreq = $('#parcelAmount').val();
+            var sim_params = {
+                size: fleet_size,
+                maxDist: maxDist,
+                parcels: parcelFreq,   
+                sim_uid: sim_uid,
+                sim_start: sim_data.sim_end,
+                sim_dur: 1800,
+            };
+            console.log(sim_params);
+            $.post( '/fleetsim', JSON.stringify(sim_params), function( data ) {
+                console.log(data);
+                installSimData(data);
+                sim_queryonce = true;
+                // animateCars();
+            }, 'json');
+        }
     }, sim_framestep);
     intervals.push(interval);
     
