@@ -482,8 +482,8 @@ function animateCars() {
             // New hour
             sim_data.curHour++;
             if (sim_data.curHour < sim_data.emissions.length) {
-            emissions[0] = sim_data.emissions[sim_data.curHour];
-            drawEmissionChart(emissions);
+            // emissions[0] = sim_data.emissions[sim_data.curHour];
+            // drawEmissionChart(emissions);
             }
         }
         
@@ -977,15 +977,8 @@ function normalize_emissions() {
 }
 
 function calculateTripEmission(trip, isCar) {
-    if (isCar) {
-        tot_distances[1] = trip.route.distance;
-        tot_distances[2] = trip.route.distance;
-    // } else {
-        tot_distances[0] = trip.route.distance;
-    }  
-    
     for (var i = 0; i < emissions.length; i++) {
-        emissions[i] += tot_distances[i] * emissions_coeffs[i] / 10000;
+        emissions[i] += trip.route.distance * emissions_coeffs[i] / 10000;
     }
   //normalize_emissions()
 }
