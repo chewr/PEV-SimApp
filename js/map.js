@@ -376,39 +376,6 @@ function zipUtilization() {
     return [util_human, util_parc];
 }
 
-function push_all(arr1, arr2) {
-    arr1.push.apply(arr1, arr2);
-}
-
-function installSimData(data) {
-    if (data.sim_uid == sim_uid) {
-        // TODO merge util/wait/emissions
-        // merge vehicle histories and enabled/disabled
-        for (var i = 0; i < data.fleet.vehicles.length; i++) {
-            if (i < sim_data.fleet.vehicles.length) {
-                // TODO allow resizing fleet (handle enabled/disabled)
-                push_all(sim_data.fleet.vehicles[i].history, data.fleet.vehicles[i].history);
-            } else {
-                // TODO append and start drawing 
-            }
-        }
-        // merge trips
-        push_all(sim_data.trips, data.trips);
-        
-        // update timing details
-        sim_data.sim_end = data.sim_end;
-        
-        sim_ongoing = sim_data.ongoing;
-    }
-}
-
-function secondsFromSimEnd() {
-    var tsteps_left = sim_data.sim_end - sim_data.tstep;
-    var frames_left = tsteps_left / sim_tstep;
-    var ms_left = frames_left * sim_framestep;
-    return ms_left / 1000;
-}
-
 function animateCars() {
     // like animateLines but for cars with a schedule of many things to do    
 
@@ -1397,3 +1364,36 @@ var darkMap = [
         ]
     }
     ]
+
+function push_all(arr1, arr2) {
+    arr1.push.apply(arr1, arr2);
+}
+
+function installSimData(data) {
+    if (data.sim_uid == sim_uid) {
+        // TODO merge util/wait/emissions
+        // merge vehicle histories and enabled/disabled
+        for (var i = 0; i < data.fleet.vehicles.length; i++) {
+            if (i < sim_data.fleet.vehicles.length) {
+                // TODO allow resizing fleet (handle enabled/disabled)
+                push_all(sim_data.fleet.vehicles[i].history, data.fleet.vehicles[i].history);
+            } else {
+                // TODO append and start drawing 
+            }
+        }
+        // merge trips
+        push_all(sim_data.trips, data.trips);
+        
+        // update timing details
+        sim_data.sim_end = data.sim_end;
+        
+        sim_ongoing = sim_data.ongoing;
+    }
+}
+
+function secondsFromSimEnd() {
+    var tsteps_left = sim_data.sim_end - sim_data.tstep;
+    var frames_left = tsteps_left / sim_tstep;
+    var ms_left = frames_left * sim_framestep;
+    return ms_left / 1000;
+}
