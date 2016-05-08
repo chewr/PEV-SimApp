@@ -19,6 +19,7 @@ class Sim_env:
 		self.util = []
 		self.emissions = []
 		self.wait_times = []
+		self.ongoing = True
 
 		self.trips = []
 	
@@ -29,7 +30,7 @@ class Sim_env:
 		self.fleet_size = size
 		
 
-	def getSegment(self, start, end):
+	def getSegment(self, start, end, ongoing):
 		sgmnt = Sim_env(self.fleet_size, self.bounds, self.start_loc)
 		sgmnt.fleet = self.fleet.getSegment(start, end)
 		sgmnt.sim_start = start
@@ -47,6 +48,7 @@ class Sim_env:
 		for trip in self.trips:
 			if start <= trip.getTimeOrdered() and trip.getTimeOrdered() < end:
 				sgmnt.trips.append(trip)
+		sgmnt.ongoing = ongoing
 		return sgmnt
 
 	def scheduleIncremental(self, trips, dur):

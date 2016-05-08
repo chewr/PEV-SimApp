@@ -21,7 +21,7 @@ var sim_uid = "";
 var sim_tstep = 4;
 var sim_framestep = 25;
 var sim_queryonce = true;
-var sim_ongoing = true;
+var sim_ongoing = false;
 
 var sim_hm_passStart;
 var sim_hm_passEnd;
@@ -199,6 +199,7 @@ function fleet_sim() {
         sim_data = data;
         sim_queryonce = true;
         sim_uid = sim_data['sim_uid'];
+        sim_ongoing = true;
         animateCars();
     }, 'json');
 }
@@ -396,7 +397,16 @@ function installSimData(data) {
         
         // update timing details
         sim_data.sim_end = data.sim_end;
+        
+        sim_ongoing = sim_data.ongoing;
     }
+}
+
+function secondsFromSimEnd() {
+    var tsteps_left = sim_data.sim_end - sim_data.tstep;
+    var frames_left = tsteps_left / sim_tstep;
+    var ms_left = frames_left * sim_framestep;
+    return ms_left / 1000;
 }
 
 function animateCars() {
@@ -414,9 +424,18 @@ function animateCars() {
         if (!interval) {
             return;
         }
+        if (sim_data.tstep > sim_data.sim_end) {
+            // TODO garbage collect, finish simulation
+            return;
+        }
         sim_data.tstep += sim_tstep;
-        if (sim_ongoing && sim_queryonce) {
-            sim_queryonce = false
+        if ((sim_data.tstep / sim_tstep) % 50 == 0) {
+            console.log(sim_data.tstep);
+            console.log(sim_data.sim_end);
+        }
+        if (sim_ongoing && sim_queryonce &&
+           secondsFromSimEnd() < 5) {
+            sim_queryonce = false;
             var fleet_size = $('#fleetSize').val();
             var maxDist = $('#maxTripDist').val();
             var parcelFreq = $('#parcelAmount').val();

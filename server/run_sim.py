@@ -17,4 +17,4 @@ def Run(sim_uid, fleet, maxDist, freq, dur):
 	pickups = dynamic_trips.TripRandomizer().assembleTripSim(maxDist, freq, maxDist, freq, start, end)
 	env.scheduleIncremental(pickups, dur)
 	environs[env.sim_uid] = env
-	return json.dumps(env.getSegment(start, end), default=sim_util.default_json, separators=(',', ':'), indent=4)
+	return json.dumps(env.getSegment(start, end, True), default=sim_util.default_json, separators=(',', ':'), indent=4)
