@@ -3,6 +3,11 @@
 ## upcoming tasks)
 import fleet
 from sets import Set
+import sim_util
+
+def linearSpeedEst(a, b):
+	## distance estimate based on 3 m/s movement of straight-line distance
+	return int(sim_util.ll_dist_m(a, b) / 3)
 
 def assign(time, task, fleet):
 	## strawman - assign task to soonest free member
@@ -13,7 +18,7 @@ def assign(time, task, fleet):
 			if not pev.getUID() in illegal:
 				if assignee is None:
 					assignee = pev
-				elif pev.soonestFreeAfter(time) < assignee.soonestFreeAfter(time):
+				elif pev.soonestArrivalAfter(time, task.getPickupLoc(), heuristic = linearSpeedEst) < assignee.soonestArrivalAfter(time, task.getPickupLoc(), heuristic = linearSpeedEst):
 					assignee = pev
 		try: 
 			wait_time = assignee.assign(task, time)

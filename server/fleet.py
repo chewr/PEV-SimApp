@@ -30,6 +30,9 @@ class Dispatch:
 	def getDistance(self):
 		return self.route_distance
 
+	def getEndLoc(self):
+		return self.dest
+
 def create_dispatch(time, start, dest):
 	rte = routes.RouteFinder().get_dirs(start, dest)
 	if rte is None:
@@ -108,6 +111,22 @@ class Vehicle:
 			return t
 		else:
 			return self.history[-1].end
+
+	def locationAfter(self, t):
+		if self.history[-1].end <= t:
+			return self.history[-1].getEndLoc()
+		else:
+			## It's only called in one situation in which
+			## the passed in value is received from soonestFreeAfter
+			## It's possible that this may be used if in the future,
+			## PEVs can be redirected after being assigned or if PEVs
+			## carrying a package can pick up a passenger or additional
+			## package
+			raise(NotImplementedError)
+
+	def soonestArrivalAfter(self, t, dst, heuristic=lambda x, y: 0):
+		time_free_at = self.soonestFreeAfter(t)
+		return time_free_at + heuristic(self.locationAfter(time_free_at), dst)
 
 	def getUID(self):
 		return self.uid
