@@ -101,7 +101,7 @@ class TripRandomizer:
 		print "found " + str(idx - 1) + " trips shorter than " + str(maxDist)
 		random.seed()
 		if idx - 1 < len(tripTimes):
-			rides = [random.sample(TripRandomizer.instance.trips[:idx], 1) for i in xrange(len(tripTimes))]
+			rides = [random.choice(TripRandomizer.instance.trips[:idx]) for i in xrange(len(tripTimes))]
 			return zip(tripTimes, rides)
 		else:
 			return zip(tripTimes, random.sample(TripRandomizer.instance.trips[:idx], len(tripTimes)))
@@ -112,7 +112,11 @@ class TripRandomizer:
 		pickups = []
 		ids = 0
 		for h in humanRiders:
-			pickups.append(trip.Pickup(ids, h[0], h[1].start, h[1].dest, True, route=h[1].route))
+			try:
+				pickups.append(trip.Pickup(ids, h[0], h[1].start, h[1].dest, True, route=h[1].route))
+			except:
+				print h
+				exit(1)
 			ids += 1
 		for p in parcels:
 			pickups.append(trip.Pickup(ids, p[0], p[1].start, p[1].dest, False, route=p[1].route))
