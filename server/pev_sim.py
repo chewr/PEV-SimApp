@@ -6,11 +6,11 @@ import os
 import hashlib
 
 class Sim_env:
-	def __init__(self, fleet_size, bounds, start_loc):
+	def __init__(self, fleet_size, bounds, start_loc_func):
 		self.bounds = bounds
 		self.fleet_size = fleet_size
-		self.start_loc = start_loc
-		self.fleet = pev.Fleet(fleet_size, bounds, start_loc)
+		self.start_loc_func = start_loc_func
+		self.fleet = pev.Fleet(fleet_size, bounds, start_loc_func)
 
 		self.sim_start = 0
 		self.sim_end = 0
@@ -31,7 +31,7 @@ class Sim_env:
 		
 
 	def getSegment(self, start, end, ongoing):
-		sgmnt = Sim_env(self.fleet_size, self.bounds, self.start_loc)
+		sgmnt = Sim_env(self.fleet_size, self.bounds, self.start_loc_func)
 		sgmnt.fleet = self.fleet.getSegment(start, end)
 		sgmnt.sim_start = start
 		sgmnt.sim_end = end
