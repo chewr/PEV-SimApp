@@ -6,6 +6,7 @@ import cPickle as pickle
 import atexit
 import sys
 import route_cache
+import cachetools
 
 class RouteFinder:
 	class __RF:
@@ -19,12 +20,15 @@ class RouteFinder:
 				sys.exit(1)
 			self.client = googlemaps.Client(key=api_key)
 			self.cache = route_cache.RouteCache(cache_file)
+			self.memcache = cachetools.LRUCache(maxsize=100)
 	
 		def get_dirs(self, origin, dest):
+			if (origin, dest) in self.memcache:
+				return memcache[(origin, dest)]
 			## TODO dynamic programming + graph algos for more cache hits?
 			## TODO do we need to do multiple modes? (bicycling vs driving)?
+			route = None
 			if not self.cache.hasRoute(origin, dest):
-				route = None
 				try:
 					route = self.client.directions(origin, dest, mode="bicycling")
 				except googlemaps.exceptions.Timeout:
@@ -39,7 +43,11 @@ class RouteFinder:
 				else:
 					print "Couldn't find route from " + str(origin) + " to " + str(dest)
 					return None
-			return Route(self.cache.getRoute(origin, dest))
+			else:
+				route = self.cache.getRoute(origin, dest))
+			out = Route(route)
+			self.memcache[(origin, dest)] = out
+			return out
 	
 		def save_cache(self):
 			self.cache.save()
