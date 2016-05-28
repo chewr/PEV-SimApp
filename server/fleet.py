@@ -200,13 +200,13 @@ class Vehicle:
 		return out
 
 class Fleet:
-	def __init__(self, fleet_size, bounds, start_loc_func):
+	def __init__(self, fleet_size, bounds, starting_locs):
 		self.vehicles = []
-		self.start_loc_func = start_loc_func
+		self.starting_locs = starting_locs
 		self.fleet_size = fleet_size
 		for i in xrange(self.fleet_size):
 			self.vehicles.append(
-				Vehicle(i, True, start_loc_func(i)))		
+				Vehicle(i, True, starting_locs[i % len(starting_locs)]))		
 
 		
 	def assign_task(self, trip):
@@ -284,7 +284,7 @@ class Fleet:
 			for i in xrange(self.fleet_size, size):
 				## enable any disabled vehicles or add new ones
 				if i >= len(self.vehicles):
-					self.vehicles.append(Vehicle(i, True, self.start_loc_func(i)))
+					self.vehicles.append(Vehicle(i, True, self.starting_locs[i % len(starting_locs)]))
 				else:
 					self.vehicles[i].enable()
 		elif size < self.fleet_size:
