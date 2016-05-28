@@ -24,7 +24,7 @@ class RouteFinder:
 	
 		def get_dirs(self, origin, dest):
 			if (origin, dest) in self.memcache:
-				return memcache[(origin, dest)]
+				return self.memcache[(origin, dest)]
 			## TODO dynamic programming + graph algos for more cache hits?
 			## TODO do we need to do multiple modes? (bicycling vs driving)?
 			route = None
@@ -44,7 +44,7 @@ class RouteFinder:
 					print "Couldn't find route from " + str(origin) + " to " + str(dest)
 					return None
 			else:
-				route = self.cache.getRoute(origin, dest))
+				route = self.cache.getRoute(origin, dest)
 			out = Route(route)
 			self.memcache[(origin, dest)] = out
 			return out
