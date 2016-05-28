@@ -58,3 +58,6 @@ class Pickup:
 
 	def setPickup(self, wait):
 		self.pickup = self.time_ordered + wait
+	def getWait(self):
+		assert(self.pickup >= self.time_ordered)
+		return self.pickup - self.time_ordered
