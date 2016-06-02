@@ -49,6 +49,14 @@ pickle.dump(stations, open("hubway_stations.pkl", "wb"))
 
 media_lab = (42.3492699,-71.0900377)
 
+all_fuzzed_locs = None
+hubway_loc_file = "hubway_locs.pkl"
+try:
+	with open(hubway_loc_file, "rb") as f:
+		all_fuzzed_locs = pickle.load(f)	
+except:
+	all_fuzzed_locs = Set([])
+
 print "Fuzzing stations..."
 fuzzy_stations = {}
 for s in stations:
@@ -64,8 +72,10 @@ for s in stations:
 			if server.routes.RouteFinder().get_dirs(media_lab, pt):
 				# print "route from", pt, "found"
 				fuzzball.add(pt)
+				all_fuzzed_locs.add(pt)
 	
 	fuzzy_stations[s] = fuzzball
 
 print "Writing fuzzed stations to file"
 pickle.dump(fuzzy_stations, open("fuzzed_stations.pkl", "wb"))
+pickle.dump(all_fuzzed_locs, open(hubway_loc_file, "wb"))
