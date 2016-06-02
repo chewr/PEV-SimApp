@@ -52,8 +52,12 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 # initialize simulation stuff
 server.routes.RouteFinder("google_api_key", "route_cache")
-server.dynamic_trips.TripRandomizer().loadLocsFile(".loc_file")
-server.dynamic_trips.TripRandomizer().loadRidesFile(".rides_def")
+## server.dynamic_trips.TripRandomizer().loadLocsFile(".loc_file")
+## server.dynamic_trips.TripRandomizer().loadRidesFile(".rides_def")
+
+server.dynamic_trips.TripRandomizer().loadLocsFile("hubway_locs.pkl")
+server.dynamic_trips.TripRandomizer().loadRidesFile("hubway_rides.pkl")
+
 Handler = ServerHandler
 
 httpd = SocketServer.TCPServer(("", PORT), Handler)
